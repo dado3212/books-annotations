@@ -54,7 +54,6 @@ for bookmark in bookmarks:
     })
     
 def cfi_to_sortable_value(cfi):
-    x = 'epubcfi(/6/304[id167]!/4[4F1KC0-7077b85d15a1406085690fde3201ca05]/710/2/1,:0,:23)'
     cfi = cfi.replace('epubcfi(', '').replace(')', '')
     cfi = re.sub(r'\[[^\]]*\]', '', cfi)
     
