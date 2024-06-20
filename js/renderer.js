@@ -65,7 +65,7 @@ function cfiToSortableValue(cfi) {
 }
 
 $(document).ready(() => {
-    handleBooksList('/Users/abeals/Git/books-annotations/python/Books.plist', () => {
+    handleBooksList('/Users/abeals/Git/books-annotations/python/Purchases.plist', () => {
         handleAnnotationsList('/Users/abeals/Git/books-annotations/python/com.apple.ibooks-sync.plist', () => {
             //  Post-process (sort by location, remove those with no annotations)
             Object.keys(listOfBooks).forEach(bookHash => {
@@ -87,6 +87,8 @@ $(document).ready(() => {
 
             let booksList = $('.books');
             let annotationsList = $('.annotations');
+
+            console.log(listOfBooks);
             
             Object.keys(listOfBooks).sort((a, b) => listOfBooks[b]['annotations'].length - listOfBooks[a]['annotations'].length).forEach(bookHash => {
                 let bookElement = $(`
