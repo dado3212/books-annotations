@@ -20,3 +20,5 @@ https://nodejs.org/en/download/package-manager
 * `npm -v`: `10.7.0`
 
 Quick start - https://www.electronjs.org/docs/latest/tutorial/quick-start
+
+`npm start`
