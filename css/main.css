@@ -20,8 +20,13 @@
 .book {
     background-color: #eee;
     margin-bottom: 5px;
+    border-radius: 3px;
 
     cursor: pointer;
+
+    &.selected {
+        border: 2px solid red;
+    }
 
     .count {
         background-color: #2df2f2;
@@ -42,14 +47,41 @@
     margin-left: 5px;
 
     flex: 2;
+
+    background-color: #f4f5f6;
 }
 
 .annotation {
-    background-color: #efefef;
     margin-bottom: 5px;
     padding: 3px;
 
+    border-bottom: 1px solid #eaeaea;
+
+    mark {
+        line-height: 1.3em;
+    }
+
     &.hidden {
         display: none;
+    }
+
+    &.style-3 mark {
+        background-color: #f9df5a;
+    }
+
+    &.style-2 mark {
+        background-color: #a0befa;
+    }
+
+    &.style-1 mark {
+        background-color: #a6df94;
+    }
+
+    &.style-4 mark {
+        background-color: #fda8bd;
+    }
+
+    &.style-5 mark {
+        background-color: #cbb9f9;
     }
 }

@@ -47,6 +47,7 @@ function handleAnnotationsList(plistPath, callback) {
                 'date': bookmark["annotationCreationDate"],
                 'text': text,
                 'location': bookmark['annotationLocation'],
+                'style': bookmark['annotationStyle'],
                 'other': bookmark,
             })
         });
@@ -97,6 +98,11 @@ $(document).ready(() => {
                 `);
 
                 bookElement.on('click', (e) => {
+                    // Highlight the current book
+                    $(`.book.selected`).removeClass('selected');
+                    bookElement.addClass('selected');
+                    
+                    // Make the relevant annotations visible
                     let hash = bookElement.data('hash');
                     $(`.annotation`).addClass('hidden');
                     $(`.annotation[data-hash="${hash}"]`).removeClass('hidden');
@@ -106,8 +112,8 @@ $(document).ready(() => {
 
                 listOfBooks[bookHash]['annotations'].forEach(annotation => {
                     let annotationElement = $(`
-                        <div class="annotation hidden" data-hash="${bookHash}">
-                            <span class="text">${annotation['text']}</span>
+                        <div class="annotation hidden style-${annotation['style']}" data-hash="${bookHash}">
+                            <mark class="text">${annotation['text']}</mark>
                         </div>
                     `);
                     annotationsList.append(annotationElement);
