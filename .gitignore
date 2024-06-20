@@ -1,3 +1,4 @@
 *.plist
-*.json
+result.json
 .DS_Store
+node_modules

@@ -1,0 +1,15 @@
+{
+  "name": "books-annotations",
+  "version": "1.0.0",
+  "description": "An app for viewing and extracting annotations and highlights and notes from the Books app",
+  "main": "main.js",
+  "scripts": {
+    "start": "electron .",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Alex Beals (alexcbeals@gmail.com)",
+  "license": "MIT",
+  "devDependencies": {
+    "electron": "^31.0.2"
+  }
+}
