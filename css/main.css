@@ -2,11 +2,18 @@
     display: flex;
 }
 
-.books {
+.books, .annotations {
     border: 2px solid grey;
     padding: 4px;
+
     margin-top: 5px;
 
+    height: calc(100vh - 55px);
+
+    overflow-y: scroll;
+}
+
+.books {
     flex: 1;
 }
 
@@ -32,12 +39,9 @@
 }
 
 .annotations {
-    border: 2px solid grey;
-    padding: 4px;
-    margin-top: 5px;
     margin-left: 5px;
 
-    flex: 3;
+    flex: 2;
 }
 
 .annotation {
