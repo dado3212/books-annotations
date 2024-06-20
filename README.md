@@ -23,3 +23,43 @@ https://nodejs.org/en/download/package-manager
 Quick start - https://www.electronjs.org/docs/latest/tutorial/quick-start
 
 `npm start`
+
+```
+python3 -m venv venv
+source venv/bin/activate
+pip install pymobiledevice3
+```
+
+```
+pip freeze > requirements.txt
+```
+
+## libimobiledevice
+`brew install libimobiledevice`
+Install ifuse using this gist for Apple Silicon (M3 Macbook Pro) - https://gist.github.com/cbatson/01a20a44c5c1a70ed3218c32d643e65d
+`brew install --cask macfuse`
+`brew install gromgit/fuse/ifuse-mac`
+/opt/homebrew/Cellar/libimobiledevice/1.3.0_3
+
+`idevicename`
+`idevicepair pair`
+
+```
+pymobiledevice3 usbmux list
+[
+    {
+        "BuildVersion": "21F90",
+        "ConnectionType": "USB",
+        "DeviceClass": "iPhone",
+        "DeviceName": "Mercury",
+        "Identifier": "<>",
+        "ProductType": "iPhone13,3",
+        "ProductVersion": "17.5.1",
+        "UniqueDeviceID": "<>"
+    }
+]
+pymobiledevice3 afc shell
+pymobiledevice3 afc pull Books/com.apple.ibooks-sync.plist com.apple.ibooks-sync.plist 
+pymobiledevice3 afc pull Books/Purchases/Purchases.plist Purchases.plist
+
+```

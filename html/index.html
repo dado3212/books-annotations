@@ -6,17 +6,17 @@
     <link href="../css/main.css" rel="stylesheet" type="text/css">
   </head>
   <body>
-    <div class="import">
-      <button id="books">Books.plist</button>
-      <button id="bookmarks">com.apple.ibooks-sync.plist</button>
+    <div id="devices">
+      <span>Select Device...</span>
+      <button id="refresh">Refresh</button>
     </div>
-    <div class="content">
+    <div id="content">
       <div class="books"></div>
       <div class="annotations"></div>
     </div>
     <script>
       // You can also require other files to run in this process
-      window.$ = window.jQuery = require('../js/jquery-3.1.1.min.js');
+      window.$ = window.jQuery = require('../js/jquery-3.7.1.min.js');
       require('../js/renderer.js');
     </script>
   </body>

@@ -1,4 +1,6 @@
 const { app, BrowserWindow, ipcMain, dialog } = require('electron');
+const util = require('util');
+const exec = util.promisify(require('child_process').exec);
 
 const createWindow = () => {
     const win = new BrowserWindow({
@@ -23,6 +25,15 @@ ipcMain.handle('show-open-dialog', async (event, options) => {
     const result = await dialog.showOpenDialog(options);
     return result;
 });
+
+ipcMain.handle('run-command', async (event, command) => {
+    try {
+        const { stdout, stderr } = await exec(command);
+        return { error: false, stdout, stderr };
+    } catch (error) {
+        return { error: true, stdout: error.stdout, stderr: error.stderr };
+    }
+  });
 
 app.on('window-all-closed', () => {
     if (process.platform !== 'darwin') {
