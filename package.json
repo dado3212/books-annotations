@@ -2,14 +2,19 @@
   "name": "books-annotations",
   "version": "1.0.0",
   "description": "An app for viewing and extracting annotations and highlights and notes from the Books app",
-  "main": "main.js",
+  "main": "js/main.js",
   "scripts": {
     "start": "electron .",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
-  "author": "Alex Beals (alexcbeals@gmail.com)",
+  "author": "Alex Beals",
+  "repository": "https://github.com/dado3212/books-annotations",
   "license": "MIT",
   "devDependencies": {
     "electron": "^31.0.2"
+  },
+  "dependencies": {
+    "@electron/remote": "^2.1.2",
+    "plist": "^3.1.0"
   }
 }

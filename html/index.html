@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8">
+    <title>Books Annotations</title>
+    <link href="../css/main.css" rel="stylesheet" type="text/css">
+  </head>
+  <body>
+    <div class="import">
+      <button id="books">Books.plist</button>
+      <button id="bookmarks">com.apple.ibooks-sync.plist</button>
+    </div>
+    <div class="search">
+      <div class="books"></div>
+      <div class="annotations"></div>
+    </div>
+    <script>
+      // You can also require other files to run in this process
+      window.$ = window.jQuery = require('../js/jquery-3.1.1.min.js');
+      require('../js/renderer.js');
+    </script>
+  </body>
+</html>
