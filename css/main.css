@@ -1,0 +1,51 @@
+.content {
+    display: flex;
+}
+
+.books {
+    border: 2px solid grey;
+    padding: 4px;
+    margin-top: 5px;
+
+    flex: 1;
+}
+
+.book {
+    background-color: #eee;
+    margin-bottom: 5px;
+
+    cursor: pointer;
+
+    .count {
+        background-color: #2df2f2;
+        padding: 3px;
+        border-radius: 12px;
+    }
+
+    .name {
+        font-weight: bold;
+    }
+
+    .author {
+        display: block;
+    }
+}
+
+.annotations {
+    border: 2px solid grey;
+    padding: 4px;
+    margin-top: 5px;
+    margin-left: 5px;
+
+    flex: 3;
+}
+
+.annotation {
+    background-color: #efefef;
+    margin-bottom: 5px;
+    padding: 3px;
+
+    &.hidden {
+        display: none;
+    }
+}

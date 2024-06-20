@@ -23,7 +23,6 @@ function handleBooksList(plistPath, callback) {
 function handleAnnotationsList(plistPath, callback) {
     fs.readFile(plistPath, function(err, data){
         let parsed = plist.parse(data.toString());
-        console.log(parsed);
 
         let bookmarks = parsed[Object.keys(parsed)[0]]['Bookmarks'];
 
@@ -39,7 +38,7 @@ function handleAnnotationsList(plistPath, callback) {
 
             if (!(hash in listOfBooks)) {
                 listOfBooks[hash] = {
-                    'name': '[?] ' + hash,
+                    'name': hash,
                     'author': 'Unknown',
                     'annotations': [], 
                 }
@@ -68,7 +67,6 @@ $(document).ready(() => {
     handleBooksList('/Users/abeals/Git/books-annotations/python/Books.plist', () => {
         handleAnnotationsList('/Users/abeals/Git/books-annotations/python/com.apple.ibooks-sync.plist', () => {
             //  Post-process (sort by location, remove those with no annotations)
-            console.log(listOfBooks);
             Object.keys(listOfBooks).forEach(bookHash => {
                 if (listOfBooks[bookHash]['annotations'].length == 0) {
                     delete listOfBooks[bookHash]
@@ -85,18 +83,35 @@ $(document).ready(() => {
                     return indexA.length - indexB.length;
                 });
             });
-            console.log(listOfBooks);
+
             let booksList = $('.books');
+            let annotationsList = $('.annotations');
             
-            Object.keys(listOfBooks).forEach(bookHash => {
-                let element = $(`
+            Object.keys(listOfBooks).sort((a, b) => listOfBooks[b]['annotations'].length - listOfBooks[a]['annotations'].length).forEach(bookHash => {
+                let bookElement = $(`
                     <div class="book" data-hash="${bookHash}">
+                        <span class="count">${listOfBooks[bookHash]['annotations'].length}</span>
                         <span class="name">${listOfBooks[bookHash]['name']}</span>
                         <span class="author">${listOfBooks[bookHash]['author']}</span>
                     </div>
                 `);
+
+                bookElement.on('click', (e) => {
+                    let hash = bookElement.data('hash');
+                    $(`.annotation`).addClass('hidden');
+                    $(`.annotation[data-hash="${hash}"]`).removeClass('hidden');
+                });
                     
-                booksList.append(element);
+                booksList.append(bookElement);
+
+                listOfBooks[bookHash]['annotations'].forEach(annotation => {
+                    let annotationElement = $(`
+                        <div class="annotation hidden" data-hash="${bookHash}">
+                            <span class="text">${annotation['text']}</span>
+                        </div>
+                    `);
+                    annotationsList.append(annotationElement);
+                });
             });
         });
 //   $('.import #books').on('click', async () => {
