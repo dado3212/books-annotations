@@ -1,7 +1,7 @@
 const { app, BrowserWindow, ipcMain, dialog } = require('electron');
 const util = require('util');
 const exec = util.promisify(require('child_process').exec);
-const libijs = require('../libijs-master');
+const libijs = require('../libijs');
 
 const meaco = require("meaco");
 
