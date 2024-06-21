@@ -131,7 +131,7 @@ async function populate() {
         listOfBooks[bookHash]['annotations'].forEach(annotation => {
             let annotationElement = $(`
                         <div class="annotation hidden style-${annotation['style']}" data-hash="${bookHash}">
-                            <mark class="text">${annotation['text']}</mark>
+                            <mark class="text">${annotation['text'].replace("\n", "<br>")}</mark>
                         </div>
                     `);
             if (annotation['note'] !== null) {
@@ -179,14 +179,6 @@ async function doStuff() {
     document.getElementById('refresh').disabled = true;
     await ipcRenderer.invoke('get-device-name');
 }
-
-// document.addEventListener('DOMContentLoaded', () => {
-//     findInPage = new FindInPage({
-//         inputFocusColor: '#ce9ffc',
-//         textColor: '#212121',
-//         parentElement: document.querySelector('.annotations'),
-//     });
-// });
 
 ipcRenderer.on('found-in-page', (_, result) => {
     document.querySelector('.search .progress').innerHTML = `${result['activeMatchOrdinal']}/${result['matches']}`;

@@ -174,16 +174,6 @@ body {
     }
 }
 
-#no-results {
-    text-align: center;
-    margin-top: 20px;
-    color: #272727;
-
-    &.hidden {
-        display: none;
-    }
-}
-
 @font-face {
     font-family: 'SF Pro';
     font-style: normal;
