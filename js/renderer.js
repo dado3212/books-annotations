@@ -89,7 +89,7 @@ async function populate() {
 
     Object.keys(listOfBooks).sort((a, b) => listOfBooks[b]['annotations'].length - listOfBooks[a]['annotations'].length).forEach(bookHash => {
         let bookElement = $(`
-                    <div class="book" data-hash="${bookHash}">
+                    <div class="book" data-hash="${bookHash}" data-offset="0">
                         <span class="name">${listOfBooks[bookHash]['name']}</span>
                         <span class="author">by ${listOfBooks[bookHash]['author']}</span>
                         <span class="count">${listOfBooks[bookHash]['annotations'].length} notes</span>
@@ -99,8 +99,19 @@ async function populate() {
         bookElement.on('click', (e) => {
             // If it's not highlighted, highlight it
             if (!bookElement.hasClass('selected')) {
-                $(`.book.selected`).removeClass('selected');
+                const annotations = document.querySelector('.annotations');
+                // Save the current scrollIndex for the other book
+                const selected = $(`.book.selected`).first();
+                if (selected.length > 0) {
+                    selected.data('offset', annotations.scrollTop);
+                    selected.removeClass('selected');
+                }
                 bookElement.addClass('selected');
+
+                document.querySelector('.annotations').scrollTo({
+                    top: bookElement.data('offset'),
+                    behavior: "instant",
+                });
             } else {
                 // Else, take it as a cue to scroll to top
                 document.querySelector('.annotations').scrollTo({
