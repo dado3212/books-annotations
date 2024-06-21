@@ -3,6 +3,7 @@ var fs = require('fs');
 var plist = require('plist');
 
 var listOfBooks = {};
+var currentHash = '';
 
 // Adapted from https://gist.github.com/mlitwin/1a5471ae2897c360914247bc8db6b57a
 function cfiToSortableValue(cfi) {
@@ -12,6 +13,8 @@ function cfiToSortableValue(cfi) {
     return cfi.split(/\D+/).filter(x => x !== '').map(Number);
 }
 
+// Should make this use await/async pattern, but meaco makes this annoying, so
+// I haven't done it yet.
 ipcRenderer.on('plist-data', async function (_, info) {
     console.log(info);
 
@@ -180,4 +183,29 @@ async function doStuff() {
 $(document).ready(async () => {
     $('#refresh').on('click', doStuff);
     doStuff();
+
+    // Cmd + F hijacking
+    $(window).keydown(function(e) {
+        if (e.keyCode == 70 && (e.ctrlKey || e.metaKey)) {
+            const searchBar = document.getElementById('search');
+            if (searchBar) {
+                searchBar.focus();
+                searchBar.select();
+            }
+        }
+    });
+
+    let timeout;
+    // Debounce searched function
+    function handleInputChange() {
+        clearTimeout(timeout);
+        timeout = setTimeout(() => {
+            $('#search').val();
+            // Get the current 
+            $(`.annotation`).addClass('hidden');
+            $(`.annotation[data-hash="${hash}"]`).removeClass('hidden');
+        }, 300);
+    }
+
+    $('#search').on('input', handleInputChange);
 });

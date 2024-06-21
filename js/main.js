@@ -1,4 +1,4 @@
-const { app, BrowserWindow, ipcMain, dialog } = require('electron');
+const { app, BrowserWindow, ipcMain, globalShortcut } = require('electron');
 const util = require('util');
 const exec = util.promisify(require('child_process').exec);
 const libijs = require('../libijs');
@@ -59,6 +59,19 @@ const createWindow = () => {
           enableRemoteModule: true,
         },
     });
+
+    // Register global shortcut
+    // globalShortcut.register('CommandOrControl+F', () => {
+    //     console.log(win);
+    //     win.isFocused() && win.webContents.send('focus-search-bar');
+    // });
+    // // win.webContents.on('before-input-event', (event, input) => {
+    // //     if (input.key === 'f' && (input.meta || input.control)) {
+    // //         event.preventDefault();
+    // //         mainWindow.webContents.send('focus-search-bar');
+    // //     }
+    // });
+
 
     win.loadFile('html/index.html');
 

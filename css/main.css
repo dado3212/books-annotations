@@ -9,10 +9,6 @@ body {
     height: 100vh;
 }
 
-#devices {
-    height: 50px;
-}
-
 #content {
     display: flex;
     height: calc(100% - 51px);
@@ -109,6 +105,24 @@ body {
             font-weight: bold;
         }
     }
+}
+
+#menu {
+    height: 50px;
+
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+#search {
+    border: none;
+    padding: 8px 15px;
+    margin-right: 10px;
+    border-radius: 25px;
+    outline: none;
+    width: 300px;
+    background-color: #eceef0;
 }
 
 @font-face {
