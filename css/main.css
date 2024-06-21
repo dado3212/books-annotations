@@ -94,6 +94,10 @@ body {
         background-color: #cbb9f9;
     }
 
+    .note {
+        margin-top: 8px;
+    }
+
     .info {
         font-size: 0.7em;
         margin-top: 12px;

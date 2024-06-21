@@ -69,7 +69,8 @@ function updateAnnotationsForSearch() {
     const search = $('#search').val();
     // Iterate over all of the current annotations and set the status
     document.querySelectorAll(`.annotation[data-hash="${currentHash}"]`).forEach(e => {
-        if (e.querySelector('mark.text').textContent.toLowerCase().includes(search.toLowerCase())) {
+        if (e.querySelector('mark.text').textContent.toLowerCase().includes(search.toLowerCase()) ||
+            (e.querySelector('.note') && e.querySelector('.note').textContent.toLowerCase().includes(search.toLowerCase()))) {
             e.classList.remove('hidden');
         } else {
             e.classList.add('hidden');
@@ -150,12 +151,14 @@ async function populate() {
             let annotationElement = $(`
                         <div class="annotation hidden style-${annotation['style']}" data-hash="${bookHash}">
                             <mark class="text">${annotation['text']}</mark>
-                            <div class="info">
-                            </div>
                         </div>
                     `);
+            if (annotation['note'] !== null) {
+                annotationElement.append($(`<div class="note">${annotation['note']}</div>`));
+            }
+            let info = $(`<div class="info"></div>`);
             if (annotation['chapter'] !== null) {
-                annotationElement.find('.info').append($(`<span class="chapter">${annotation['chapter']}</span><span class="divider">·</span>`))
+                info.append($(`<span class="chapter">${annotation['chapter']}</span><span class="divider">·</span>`))
             }
             let formattedDate = (new Date(annotation['date'] * 1000)).toLocaleDateString('en-US', {
                 weekday: 'long',
@@ -163,7 +166,8 @@ async function populate() {
                 month: 'long',
                 day: 'numeric'
             });
-            annotationElement.find('.info').append($(`<span class="date">${formattedDate}</span>`))
+            info.append($(`<span class="date">${formattedDate}</span>`));
+            annotationElement.append(info);
             annotationsList.append(annotationElement);
         });
     });
@@ -200,7 +204,7 @@ $(document).ready(async () => {
     doStuff();
 
     // Cmd + F hijacking
-    $(window).keydown(function(e) {
+    $(window).keydown(function (e) {
         if (e.keyCode == 70 && (e.ctrlKey || e.metaKey)) {
             const searchBar = document.getElementById('search');
             if (searchBar) {
