@@ -10,8 +10,6 @@ const Service = require("../../Service");
 const protocol = require("./protocol");
 const File = require("./File");
 const fileStreams = require("./streams");
-const walk = require("../../lib/walk");
-const afcWalk = require("./walk");
 
 // mce Modules
 const meaco = require("meaco");
@@ -332,36 +330,6 @@ class AFC extends Service {
 	/**
 	 *
 	 *
-	 * @param {string} localPath
-	 * @param {string} remotePath
-	 * @returns {JarvisEmitter}
-	 *
-	 * @memberof AFC
-	 */
-	uploadDir(localPath, remotePath) {
-		return meaco(function* doUploadDir() {
-			yield this.makeDirectory(remotePath);
-			yield this.__uploadDirRecursive(localPath, remotePath);
-		}.bind(this));
-	}
-
-	/**
-	 *
-	 *
-	 * @param {string} remotePath
-	 * @param {boolean} [directoriesAsItems=false]
-	 * @param {boolean} [recursive=false]
-	 * @returns {JarvisEmitter}
-	 *
-	 * @memberof AFC
-	 */
-	walk(remotePath, directoriesAsItems = false, recursive = false) {
-		return afcWalk(this, remotePath, directoriesAsItems, recursive);
-	}
-
-	/**
-	 *
-	 *
 	 * @param {string} remotePath
 	 * @param {string} localPath
 	 * @returns {JarvisEmitter}
@@ -384,76 +352,6 @@ class AFC extends Service {
 				localFile.on("finish", () => {
 					promise.callDone(true);
 				});
-			});
-
-		return promise;
-	}
-
-	/**
-	 *
-	 *
-	 * @param {string} remotePath
-	 * @param {string} localPath
-	 * @returns {JarvisEmitter}
-	 *
-	 * @memberof AFC
-	 */
-	downloadDir(remotePath, localPath) {
-		const promise = new JarvisEmitter([
-			JarvisEmitter
-                .interfaceProperty()
-                .name("fileStarted")
-                .role(JarvisEmitter.role.event)
-                .sticky(true)
-				        .description("Triggered a file download was started")
-                .build(),
-			JarvisEmitter
-                .interfaceProperty()
-                .name("fileFinished")
-                .role(JarvisEmitter.role.event)
-                .description("Triggered when a file was successfully downloaded")
-                .build(),
-		]);
-
-		let pendingFiles = 0;
-		let filesDownloaded = 0;
-		let doneWalking = false;
-
-		// TODO: error handling
-		this.walk(remotePath, true, true)
-			.item((item) => {
-				// If this is a remote dir - just make sure the matching local dir exists
-				if (item.stats.isDirectory) {
-					fs.ensureDirSync(`${localPath}/${item.relativeToRoot}`);
-					return;
-				}
-
-				// This is a file - download it
-				pendingFiles++;
-				this.openFileAsReadableStream(item.fullPath)
-					.done((remoteFile) => {
-						if (!remoteFile) {
-							debug(`downloadDir: Failed to open ${item.fullPath}`);
-							return;
-						}
-
-						const localFile = fs.createWriteStream(`${localPath}/${item.relativeToRoot}`);
-						remoteFile.pipe(localFile);
-						localFile.on("finish", () => {
-							promise.callFileFinished(item.relativeToRoot);
-
-							filesDownloaded++;
-							pendingFiles--;
-							if (doneWalking && (0 === pendingFiles)) {
-								promise.callDone(filesDownloaded);
-							}
-						});
-					});
-
-				promise.callFileStarted(item.relativeToRoot);
-			})
-			.done(() => {
-				doneWalking = true;
 			});
 
 		return promise;
@@ -703,52 +601,6 @@ class AFC extends Service {
 		}
 
 		return obj;
-	}
-
-	/**
-	 *
-	 *
-	 * @param {string} localPath
-	 * @param {string} remotePath
-	 * @returns {Object}
-	 *
-	 * @memberof AFC
-	 */
-	__uploadDirRecursive(localPath, remotePath) {
-		const promise = new JarvisEmitter();
-
-		let doneIterating = false;
-		let pendingFiles = 0;
-
-		walk(localPath, true, true)
-			.item((item) => {
-				const remoteFullPath = `${remotePath}/${item.relativeToRoot}`;
-
-				// If we're at a local directory - create it remotely
-				if (item.stats.isDirectory()) {
-					// TODO: yield?
-					this.makeDirectory(remoteFullPath);
-					return;
-				}
-
-				// We have a local file - upload it
-				pendingFiles++;
-				this.uploadFile(item.fullPath, `${remotePath}/${item.relativeToRoot}`)
-					.done(() => {
-						pendingFiles--;
-						if (doneIterating && (0 === pendingFiles)) {
-							promise.callDone(true);
-						}
-					});
-			})
-			.done(() => {
-				doneIterating = true;
-				if (0 === pendingFiles) {
-					promise.callDone(true);
-				}
-			});
-
-		return promise;
 	}
 }
 

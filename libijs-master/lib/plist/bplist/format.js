@@ -28,7 +28,7 @@ module.exports = {
 		true:			0x09,
 		int:			0x10,
 		real:			0x20,
-		date:			0x30,
+		// date:			0x30,
 		data:			0x40,
 		asciiString:	0x50,
 		utf16String:	0x60,

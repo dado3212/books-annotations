@@ -7,7 +7,6 @@
  * Required Modules
  *****************************************************************************/
 const bplistFormat = require("./format");
-const { timeToAppleTime } = require("../../../lib/lib/appletime");
 
 /******************************************************************************
  * Consts
@@ -301,26 +300,6 @@ class BooleanNode extends Node {
 /**
  *
  *
- * @class DateNode
- * @extends {Node}
- */
-class DateNode extends Node {
-	/**
-	 *
-	 *
-	 * @param {Buffer} buffer
-	 *
-	 * @memberof DateNode
-	 */
-	write(buffer) {
-		Node._writeMarker(buffer, BPlistTypes.date, NumberSizes.double);
-		buffer.writeDouble(timeToAppleTime(this.__value));
-	}
-}
-
-/**
- *
- *
  * @class UidNode
  * @extends {Node}
  */
@@ -347,6 +326,5 @@ module.exports = {
 	StringNode,
 	NumberNode,
 	BooleanNode,
-	DateNode,
 	UidNode,
 };

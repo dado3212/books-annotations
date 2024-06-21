@@ -7,7 +7,6 @@
  * Reqruied Modules
  *****************************************************************************/
 const bplistFormat = require("./format");
-const { appleTimeToDate } = require("../../../lib/lib/appletime");
 const { UID } = require("./types");
 
 /******************************************************************************
@@ -190,13 +189,6 @@ class Reader {
 					return this.__buffer.readDoubleBE(offset + UINT8_SIZE);
 				} else if (NumberSizes.float.forMarker === size) {
 					return this.__buffer.readFloatBE(offset + UINT8_SIZE);
-				}
-				break;
-
-			// Date
-			case BPlistTypes.date:
-				if (NumberSizes.double.forMarker === size) {
-					return appleTimeToDate(this.__buffer.readDoubleBE(offset + UINT8_SIZE));
 				}
 				break;
 
