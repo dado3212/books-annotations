@@ -113,8 +113,6 @@ ipcMain.handle('get-device-name', async (event) => {
     });
 });
 
-
-
 ipcMain.on('find-in-page', (e, text, options) => {
     const sanitizedOptions = {};
     for (const option of ['forward', 'findNext', 'matchCase']) {
@@ -122,6 +120,7 @@ ipcMain.on('find-in-page', (e, text, options) => {
             sanitizedOptions[option] = !!options[option];
         }
     }
+    console.log(text, sanitizedOptions);
     const requestId = mainWindow.webContents.findInPage(text, sanitizedOptions);
     e.returnValue = requestId;
 });

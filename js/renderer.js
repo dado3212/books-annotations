@@ -1,38 +1,8 @@
 const { ipcRenderer } = require('electron');
 var plist = require('plist');
-const ElectronFindInPage = require('electron-find').FindInPage;
 
 var listOfBooks = {};
-var currentHash = '';
-var findInPage;
-
-// Shim to expose webContents functionality to electron-find without @electron/remote
-const webContentsShim = {
-    findInPage: (text, options = {}) =>
-        ipcRenderer.sendSync('find-in-page', text, options),
-    stopFindInPage: (action) => {
-        ipcRenderer.sendSync('stop-find-in-page', action);
-    },
-    on: (eventName, listener) => {
-        if (eventName === 'found-in-page') {
-            // Tunnel with main.js
-            ipcRenderer.on('found-in-page', (_, result) => {
-                listener({ sender: this }, result);
-            });
-        }
-    },
-};
-
-class FindInPage extends ElectronFindInPage {
-    constructor(options = {}) {
-        super(webContentsShim, options);
-    }
-
-    openFindWindow() {
-        super.openFindWindow();
-    }
-}
-
+var searching = false;
 
 // Adapted from https://gist.github.com/mlitwin/1a5471ae2897c360914247bc8db6b57a
 function cfiToSortableValue(cfi) {
@@ -93,26 +63,6 @@ ipcRenderer.on('plist-data', async function (_, info) {
     }
 });
 
-function updateAnnotationsForSearch() {
-    // Get the search value
-    const search = $('#search').val();
-    // Iterate over all of the current annotations and set the status
-    document.querySelectorAll(`.annotation[data-hash="${currentHash}"]`).forEach(e => {
-        if (e.querySelector('mark.text').textContent.toLowerCase().includes(search.toLowerCase()) ||
-            (e.querySelector('.note') && e.querySelector('.note').textContent.toLowerCase().includes(search.toLowerCase()))) {
-            e.classList.remove('hidden');
-        } else {
-            e.classList.add('hidden');
-        }
-    });
-    // If there aren't any visible, show the 'no results' text
-    if (document.querySelectorAll('.annotation:not(.hidden)').length > 0) {
-        document.getElementById('no-results').classList.add('hidden');
-    } else {
-        document.getElementById('no-results').classList.remove('hidden');
-    }
-}
-
 async function populate() {
     //  Post-process (sort by location, remove those with no annotations)
     Object.keys(listOfBooks).forEach(bookHash => {
@@ -169,9 +119,9 @@ async function populate() {
             }
 
             // Make the relevant annotations visible
-            currentHash = bookElement.data('hash');
+            let hash = bookElement.data('hash');
             $(`.annotation`).addClass('hidden');
-            updateAnnotationsForSearch();
+            $(`.annotation[data-hash="${hash}"]`).removeClass('hidden');
         });
 
         booksList.append(bookElement);
@@ -228,22 +178,26 @@ async function doStuff() {
     await ipcRenderer.invoke('get-device-name');
 }
 
-document.addEventListener('DOMContentLoaded', () => {
-    findInPage = new FindInPage({
-        inputFocusColor: '#ce9ffc',
-        textColor: '#212121',
-        parentElement: document.querySelector('.annotations'),
-    });
-});
+// document.addEventListener('DOMContentLoaded', () => {
+//     findInPage = new FindInPage({
+//         inputFocusColor: '#ce9ffc',
+//         textColor: '#212121',
+//         parentElement: document.querySelector('.annotations'),
+//     });
+// });
 
 $(document).ready(async () => {
     $('#refresh').on('click', doStuff);
     doStuff();
 
-    // Cmd + F hijacking
     $(window).keydown(function (e) {
+        // Cmd + F hijacking
         if (e.keyCode == 70 && (e.ctrlKey || e.metaKey)) {
-            findInPage?.openFindWindow();
+            const searchBar = document.getElementById('search');
+            if (searchBar) {
+                searchBar.focus();
+                searchBar.select();
+            }
         }
     });
 
@@ -252,15 +206,24 @@ $(document).ready(async () => {
     function handleInputChange() {
         clearTimeout(timeout);
         timeout = setTimeout(() => {
-            updateAnnotationsForSearch();
-
-            // Reset the scroll to the top
-            document.querySelector('.annotations').scrollTo({
-                top: 0,
-                behavior: "instant",
-            });
+            const search = $('#search').val();
+            if (search !== '') {
+                searching = true;
+                ipcRenderer.sendSync('find-in-page', search, { findNext: true });
+            } else {
+                searching = false;
+                ipcRenderer.sendSync('stop-find-in-page', { clearSelection: true });
+            }
         }, 300);
     }
 
     $('#search').on('input', handleInputChange);
+    $('#search').on('keydown', (e) => {
+        console.log(e.keyCode, searching, document.activeElement.id);
+        if (e.keyCode == 13) { // && searching && document.activeElement.id === 'search') {
+            e.preventDefault();
+            // Enter while searching
+            ipcRenderer.sendSync('find-in-page', $('#search').val(), { forward: !e.shiftKey, matchCase: false, findNext: true });
+        }
+    });
 });
