@@ -60,19 +60,6 @@ const createWindow = () => {
         },
     });
 
-    // Register global shortcut
-    // globalShortcut.register('CommandOrControl+F', () => {
-    //     console.log(win);
-    //     win.isFocused() && win.webContents.send('focus-search-bar');
-    // });
-    // // win.webContents.on('before-input-event', (event, input) => {
-    // //     if (input.key === 'f' && (input.meta || input.control)) {
-    // //         event.preventDefault();
-    // //         mainWindow.webContents.send('focus-search-bar');
-    // //     }
-    // });
-
-
     win.loadFile('html/index.html');
 
     deviceManager = libijs.createClient().deviceManager;
