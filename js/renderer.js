@@ -4,7 +4,6 @@ var plist = require('plist');
 var listOfBooks = {};
 var searching = false;
 var currentSearch = '';
-var requestId;
 
 // Adapted from https://gist.github.com/mlitwin/1a5471ae2897c360914247bc8db6b57a
 function cfiToSortableValue(cfi) {
@@ -196,8 +195,14 @@ $(document).ready(async () => {
                 searchBar.focus();
                 searchBar.select();
             }
+        // Hit enter anywhere to index through (or shift+enter to go back)
         } else if (e.keyCode == 13) {
             ipcRenderer.sendSync('find-in-page', currentSearch, { forward: !e.shiftKey, findNext: false, matchCase: false });
+        // Escape to exit the selection
+        } else if (e.code == "Escape") {
+            searching = false;
+            document.querySelectorAll('.search span').forEach(a => a.classList.add('hidden'));
+            ipcRenderer.sendSync('stop-find-in-page', 'clearSelection');
         }
     });
 
@@ -231,7 +236,7 @@ $(document).ready(async () => {
             } else {
                 searching = false;
                 document.querySelectorAll('.search span').forEach(a => a.classList.add('hidden'));
-                ipcRenderer.sendSync('stop-find-in-page', { clearSelection: true });
+                ipcRenderer.sendSync('stop-find-in-page', 'clearSelection');
             }
         }, 300);
     }
