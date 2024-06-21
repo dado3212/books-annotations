@@ -5,48 +5,10 @@ const libijs = require('../libijs');
 const meaco = require("meaco");
 
 var deviceManager = null;
-var device = null;
-var deviceName = null;
+var isDeviceManagerReady = false;
+var onDeviceManagerReady = () => { };
+
 var mainWindow;
-
-function testPair(device) {
-    return meaco(function* doTestAfc() {
-        console.log(device);
-        const lockdownClient = yield libijs.lockdownd.getClient(device);
-
-        const pairRecord = yield lockdownClient.__usbmuxdClient.readPairRecord(device.udid);
-        console.log(pairRecord)
-
-        // TODO: figure out a better way to detect if paired
-        const afc = yield libijs.services.getService(device, "afc", lockdownClient);
-
-        if (!afc) {
-            console.log('not paired?');
-            // do the pairing thing
-            const response = yield lockdownClient.pair();
-            console.log(response);
-            return false;
-        }
-
-        return true;
-    });
-    //const afc = yield libijs.services.getService(device, "afc");
-}
-
-function runPair(device) {
-    testPair(device)
-        .error((e) => {
-            console.error('Error:', e);
-            process.exit(1);
-        })
-        .catch((e) => {
-            console.error('Caught:', e);
-            process.exit(1);
-        })
-        .done((result) => {
-            console.log('Result:', result);
-        });
-}
 
 const createWindow = () => {
     mainWindow = new BrowserWindow({
@@ -61,55 +23,77 @@ const createWindow = () => {
 
     mainWindow.loadFile('html/index.html');
 
-    mainWindow.webContents.on('found-in-page', (event, result) => {
+    // Forward found-in-page for the 1/x UI appearance
+    mainWindow.webContents.on('found-in-page', (_, result) => {
         mainWindow.send('found-in-page', result);
     });
 
+    // Save the device manager
     deviceManager = libijs.createClient().deviceManager;
     deviceManager.ready(() => {
-        device = deviceManager.getDevice();
-
-        libijs.services.getService(device, "afc").done(afcClient => {
-            return meaco(function* doAfcExample() {
-                const lockdownClient = yield libijs.lockdownd.getClient(device);
-                const deviceInfo = yield lockdownClient.getValue(null, null);
-                deviceName = deviceInfo['DeviceName'];
-            });
-        });
+        isDeviceManagerReady = true;
+        onDeviceManagerReady();
     });
 };
 
 app.whenReady().then(createWindow);
 
 ipcMain.handle('read-plist', async (event, filePath, name) => {
+    let device = deviceManager.getDevice();
+
     libijs.services.getService(device, "afc").done(afcClient => {
         return meaco(function* doAfcExample() {
-            event.sender.send('plist-data', {
-                file: name,
-                data: (yield afcClient.readFile(filePath)).toString(),
-            });
+            const file = yield afcClient.readFile(filePath);
+            if (file == null) {
+                event.sender.send('plist-data', {
+                    file: name,
+                    data: null,
+                });
+            } else {
+                event.sender.send('plist-data', {
+                    file: name,
+                    data: file.toString(),
+                });
+            }
         });
+    }).error((e) => {
+        console.error('Error:', e);
+    }).catch((e) => {
+        event.sender.send('error', 'Please unlock and trust this device.' );
     });
 });
 
-ipcMain.handle('get-device-name', async (event) => {
-    if (deviceName !== null) {
-        event.sender.send('device-name', deviceName);
+function sendDevice(event) {
+    let device = deviceManager.getDevice();
+    if (device == null) {
+        event.sender.send('device-name', { success: false, message: 'No device found. Please attach device.' });
         return;
     }
-    device = deviceManager.getDevice();
-    if (device === null) {
-        event.sender.send('device-name', null);
-    }
 
-    libijs.services.getService(device, "afc").done(afcClient => {
-        return meaco(function* doAfcExample() {
-            const lockdownClient = yield libijs.lockdownd.getClient(device);
-            const deviceInfo = yield lockdownClient.getValue(null, null);
-            deviceName = deviceInfo['DeviceName'];
-            event.sender.send('device-name', deviceName);
-        });
+    meaco(function* doAfcExample() {
+        const lockdownClient = yield libijs.lockdownd.getClient(device, "libijs", false);
+        const deviceInfo = yield lockdownClient.getValue(null, null);
+        return deviceInfo;
+    }).done(deviceInfo => {
+        event.sender.send('device-name', { success: true, name: deviceInfo['DeviceName'] });
+    }).error((e) => {
+        console.error('Error:', e);
+    }).catch((e) => {
+        console.log(e);
+        event.sender.send('device-name', { success: false, message: 'No device found. Please attach device.' });
     });
+}
+
+ipcMain.handle('fetch-devices', async (event) => {
+    // If it's not ready, then enqueue for after
+    if (!isDeviceManagerReady) {
+        onDeviceManagerReady = () => {
+            sendDevice(event)
+        };
+        return;
+    } else {
+        sendDevice(event);
+    }
 });
 
 ipcMain.on('find-in-page', (e, text, options) => {

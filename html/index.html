@@ -4,22 +4,26 @@
     <meta charset="UTF-8">
     <title>Books Annotations</title>
     <link href="../css/main.css" rel="stylesheet" type="text/css">
+    <link rel="stylesheet" href="../node_modules/@fortawesome/fontawesome-free/css/all.min.css">
   </head>
   <body>
     <div id="menu">
-      <div id="devices">
-        <span>Select Device...</span>
-        <button id="refresh">Refresh</button>
+      <div class="devices">
+        <span>Loading...</span>
+        <div id="devices"></div>
+        <button id="refresh" title="Refresh"><i class="fas fa-arrows-rotate"></i></button>
       </div>
       <div class="search">
         <input type="text" id="search" placeholder="Search...">
         <span class="progress hidden">1/130</span>
-        <span id="back" class="hidden">⌃</span>
-        <span id="forward" class="hidden">⌃</span>
+        <span id="back" class="hidden"><i class="fas fa-angle-up"></i></span>
+        <span id="forward" class="hidden"><i class="fas fa-angle-down"></i></span>
       </div>
     </div>
     <div id="content">
-      <div class="books"></div>
+      <div class="books">
+        <div id="no-results" class="hidden">No books with annotations.</div>
+      </div>
       <div class="annotations">
       </div>
     </div>

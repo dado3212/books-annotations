@@ -16,6 +16,11 @@ function cfiToSortableValue(cfi) {
 // Should make this use await/async pattern, but meaco makes this annoying, so
 // I haven't done it yet.
 ipcRenderer.on('plist-data', async function (_, info) {
+    // If the data is null, then we successfully read, but had no data
+    if (info.data == null) {
+        populate();
+        return;
+    }
 
     if (info.file == 'books') {
         let parsed = plist.parse(info.data)['Books'];
@@ -86,6 +91,12 @@ async function populate() {
     let booksList = $('.books');
     let annotationsList = $('.annotations');
 
+    if (Object.keys(listOfBooks).length == 0) {
+        document.getElementById('no-results').classList.remove('hidden');
+    } else {
+        document.getElementById('no-results').classList.add('hidden');
+    }
+
     Object.keys(listOfBooks).sort((a, b) => listOfBooks[b]['annotations'].length - listOfBooks[a]['annotations'].length).forEach(bookHash => {
         let bookElement = $(`
                     <div class="book" data-hash="${bookHash}" data-offset="0">
@@ -153,21 +164,31 @@ async function populate() {
     });
 }
 
-ipcRenderer.on('device-name', function (_, name) {
+ipcRenderer.on('error', function (_, error) {
+    $('.devices span')[0].innerHTML = error;
+});
+
+ipcRenderer.on('device-name', function (_, info) {
     document.getElementById('refresh').disabled = false;
 
-    $('#devices button.device').remove();
+    $('#devices .device').remove();
 
-    if (name === null) {
-        $('#devices span')[0].innerHTML = 'No device found. Please attach device.';
+    if (!info.success) {
+        $('.devices span')[0].innerHTML = info.message;
     } else {
-        $('#devices span')[0].innerHTML = 'Select device.';
+        $('.devices span')[0].innerHTML = '';
         const button = $(`
             <button class="device">
-                ${name}
+                <i class="fas fa-mobile-screen"></i>${info.name}
             </button>
         `);
         button.on('click', async () => {
+            $('.devices span')[0].innerHTML = '';
+            // Reset the local list of books
+            listOfBooks = {};
+            $('.book').remove();
+            $('.annotation').remove();
+            // Try and start fetching
             await ipcRenderer.invoke('read-plist', '/Books/Purchases/Purchases.plist', 'books');
         });
         $('#devices').append(button);
@@ -176,7 +197,7 @@ ipcRenderer.on('device-name', function (_, name) {
 
 async function doStuff() {
     document.getElementById('refresh').disabled = true;
-    await ipcRenderer.invoke('get-device-name');
+    await ipcRenderer.invoke('fetch-devices');
 }
 
 ipcRenderer.on('found-in-page', (_, result) => {
@@ -197,7 +218,9 @@ $(document).ready(async () => {
             }
         // Hit enter anywhere to index through (or shift+enter to go back)
         } else if (e.keyCode == 13) {
-            ipcRenderer.sendSync('find-in-page', currentSearch, { forward: !e.shiftKey, findNext: false, matchCase: false });
+            if (currentSearch !== '') {
+                ipcRenderer.sendSync('find-in-page', currentSearch, { forward: !e.shiftKey, findNext: false, matchCase: false });
+            }
         // Escape to exit the selection
         } else if (e.code == "Escape") {
             searching = false;

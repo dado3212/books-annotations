@@ -9,6 +9,47 @@ body {
     height: 100vh;
 }
 
+.devices {
+    display: flex;
+    align-items: center;
+
+    span {
+        font-size: 0.9em;
+    }
+
+    .device {
+        border: none;
+        background-color: rgba(0, 0, 0, 0.04);
+        padding: 5px 10px;
+        border-radius: 4px;
+        margin: 0 5px;
+        cursor: pointer;
+
+        transition: all 0.3s ease;
+
+        i {
+            margin-right: 5px;
+        }
+
+        &:hover {
+            background-color: rgba(0, 0, 0, 0.09);
+        }
+    }
+}
+
+#refresh {
+    border: none;
+    background-color: transparent;
+    font-size: 1.1em;
+    font-family: 'SF Pro', -apple-system, system-ui, sans-serif;
+    cursor: pointer;
+    color: #272727;
+
+    &:disabled {
+        cursor: none;
+    }
+}
+
 #content {
     display: flex;
     height: calc(100% - 51px);
@@ -140,7 +181,10 @@ body {
         cursor: pointer;
         user-select: none;
 
+        color: #666666;
+
         border-radius: 3px;
+        padding: 6px 4px;
 
         transition: all 0.4s ease;
 
@@ -152,15 +196,11 @@ body {
     #back {
         top: 1px;
         right: 30px;
-        padding: 8px 4px 3px 4px;
     }
 
     #forward {
-        transform: rotate(180deg);
-        display: inline-block;
         right: 10px;
         top: 1px;
-        padding: 9px 3px 2px 4px;
     }
 
     .progress {
@@ -173,6 +213,16 @@ body {
 
     span.hidden {
         display: none !important;
+    }
+}
+
+#no-results {
+    text-align: center;
+    margin-top: 20px;
+    color: #272727;
+
+    &.hidden {
+        display: none;
     }
 }
 
