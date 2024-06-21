@@ -209,6 +209,19 @@ $(document).ready(async () => {
         }
     });
 
+    $('#back').on('click', () => {
+        if (!searching) {
+            return;
+        }
+        ipcRenderer.sendSync('find-in-page', currentSearch, { forward: false, findNext: false, matchCase: false });
+    });
+    $('#forward').on('click', () => {
+        if (!searching) {
+            return;
+        }
+        ipcRenderer.sendSync('find-in-page', currentSearch, { forward: true, findNext: false, matchCase: false });
+    });
+
     let timeout;
     // Debounce searched function
     function handleInputChange() {
@@ -221,11 +234,11 @@ $(document).ready(async () => {
             currentSearch = search;
             if (currentSearch !== '') {
                 searching = true;
-                document.querySelector('.search .progress').classList.remove('hidden');
+                document.querySelectorAll('.search span').forEach(a => a.classList.remove('hidden'));
                 ipcRenderer.sendSync('find-in-page', currentSearch, { forward: true, findNext: true, matchCase: false });
             } else {
                 searching = false;
-                document.querySelector('.search .progress').classList.add('hidden');
+                document.querySelectorAll('.search span').forEach(a => a.classList.add('hidden'));
                 ipcRenderer.sendSync('stop-find-in-page', { clearSelection: true });
             }
         }, 300);

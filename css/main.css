@@ -122,25 +122,55 @@ body {
 }
 
 .search {
+    position: relative;
+
     #search {
         border: none;
-        padding: 8px 15px;
+        padding: 8px 88px 8px 15px;
         border-radius: 25px;
         outline: none;
         width: 300px;
         background-color: #eceef0;
     }
 
+    #back, #forward {
+        position: absolute;
+        cursor: pointer;
+        user-select: none;
+
+        border-radius: 3px;
+
+        transition: all 0.4s ease;
+
+        &:hover {
+            background-color: rgba(0, 0, 0, 0.05);
+        }
+    }
+
+    #back {
+        top: 1px;
+        right: 30px;
+        padding: 8px 4px 3px 4px;
+    }
+
+    #forward {
+        transform: rotate(180deg);
+        display: inline-block;
+        right: 10px;
+        top: 1px;
+        padding: 9px 3px 2px 4px;
+    }
+
     .progress {
         position: absolute;
-        right: 28px;
-        top: 17px;
+        right: 55px;
+        top: 8px;
         color: #666666;
         font-size: 0.8em;
+    }
 
-        &.hidden {
-            display: none;
-        }
+    span.hidden {
+        display: none !important;
     }
 }
 
