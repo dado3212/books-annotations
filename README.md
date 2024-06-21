@@ -61,5 +61,7 @@ pymobiledevice3 usbmux list
 pymobiledevice3 afc shell
 pymobiledevice3 afc pull Books/com.apple.ibooks-sync.plist com.apple.ibooks-sync.plist 
 pymobiledevice3 afc pull Books/Purchases/Purchases.plist Purchases.plist
-
+# Can use this to fetch information
+pymobiledevice3 afc ls Books/Purchases/b05fa8d59ac2dca7e59072dc006314baMdU2kFUVslo4Ogo1AAAJ.epub/OEBPS/
+9780593135211.opf has proper title/author info (and page count?)
 ```
