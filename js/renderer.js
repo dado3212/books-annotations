@@ -54,7 +54,8 @@ ipcRenderer.on('plist-data', async function (_, info) {
                 'text': text,
                 'location': bookmark['annotationLocation'],
                 'style': bookmark['annotationStyle'],
-                'other': bookmark,
+                'note': ('annotationNote' in bookmark) ? bookmark['annotationNote'] : null,
+                'chapter': ('futureProofing5' in bookmark) ? bookmark['futureProofing5'] : null,
             })
         });
 
@@ -89,9 +90,9 @@ async function populate() {
     Object.keys(listOfBooks).sort((a, b) => listOfBooks[b]['annotations'].length - listOfBooks[a]['annotations'].length).forEach(bookHash => {
         let bookElement = $(`
                     <div class="book" data-hash="${bookHash}">
-                        <span class="count">${listOfBooks[bookHash]['annotations'].length}</span>
                         <span class="name">${listOfBooks[bookHash]['name']}</span>
-                        <span class="author">${listOfBooks[bookHash]['author']}</span>
+                        <span class="author">by ${listOfBooks[bookHash]['author']}</span>
+                        <span class="count">${listOfBooks[bookHash]['annotations'].length} notes</span>
                     </div>
                 `);
 
@@ -112,8 +113,20 @@ async function populate() {
             let annotationElement = $(`
                         <div class="annotation hidden style-${annotation['style']}" data-hash="${bookHash}">
                             <mark class="text">${annotation['text']}</mark>
+                            <div class="info">
+                            </div>
                         </div>
                     `);
+            if (annotation['chapter'] !== null) {
+                annotationElement.find('.info').append($(`<span class="chapter">${annotation['chapter']}</span><span class="divider">·</span>`))
+            }
+            let formattedDate = (new Date(annotation['date'] * 1000)).toLocaleDateString('en-US', { 
+                weekday: 'long', 
+                year: 'numeric', 
+                month: 'long', 
+                day: 'numeric' 
+            });
+            annotationElement.find('.info').append($(`<span class="date">${formattedDate}</span>`))
             annotationsList.append(annotationElement);
         });
     });

@@ -17,26 +17,11 @@ Also handles sorting annotations by location (location is Epub CFI like this" 'e
 * Books/Purchases/Purchases.plist (has filepath)
 * Books/Purchases/<filepath>/OEBPS/*.opf has proper title/author info (and page count?)
 
-## TODO
-Add in proper attribution. LICENSE - Non-Commercial
-
-Koby Boyango <koby.b@mce-sys.com>
-Ido Ben-Harosh <ido.b@mce-sys.com>
-
-License: 
-
-## Using Electron
-https://nodejs.org/en/download/package-manager
-`brew install node@20`
-
 * `node -v`: `v20.14.0`
 * `npm -v`: `10.7.0`
 
-Quick start - https://www.electronjs.org/docs/latest/tutorial/quick-start
-
-`npm start`
-
+* `npm run build` to build the app
+* `npm start` to run locally
 
 ## libimobiledevice
-
 This uses an adapted version of [libimobiledevice](https://libimobiledevice.org/), courtesy of a prior attempt to port to NodeJS in https://github.com/mceSystems/libijs/ (the magic key 'CFA6LPAA' was the trick to finding the other usbmux Node implementations)

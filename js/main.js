@@ -50,16 +50,15 @@ function runPair (device) {
 
 const createWindow = () => {
     const win = new BrowserWindow({
-        width: 800,
+        width: 1000,
         height: 600,
+        icon: __dirname + '/assets/icon.png',
         webPreferences: {
           nodeIntegration: true,
           contextIsolation: false,
           enableRemoteModule: true,
         },
     });
-
-    // win.webContents.openDevTools();
 
     win.loadFile('html/index.html');
 

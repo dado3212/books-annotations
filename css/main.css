@@ -1,37 +1,45 @@
+html {
+    font-family: 'SF Pro', -apple-system, system-ui, sans-serif;
+}
+
+body {
+    margin: 0px;
+    display: flex;
+    flex-direction: column;
+    height: 100vh;
+}
+
+#devices {
+    height: 50px;
+}
+
 #content {
     display: flex;
+    height: calc(100% - 51px);
+    
+    border-top: 1px solid #eceef0;
 }
 
 .books, .annotations {
-    border: 2px solid grey;
-    padding: 4px;
-
-    margin-top: 5px;
-
-    height: calc(100vh - 55px);
-
     overflow-y: scroll;
 }
 
 .books {
     flex: 1;
+
+    border-right: 1px solid #eceef0;
 }
 
 .book {
-    background-color: #eee;
-    margin-bottom: 5px;
-    border-radius: 3px;
-
+    color: #272727;
     cursor: pointer;
 
-    &.selected {
-        border: 2px solid red;
-    }
+    padding: 9px 0 9px 15px;
+    line-height: 1.3em;
 
-    .count {
-        background-color: #2df2f2;
-        padding: 3px;
-        border-radius: 12px;
+    &.selected {
+        background-color: #3298db;
+        color: #ffffff;
     }
 
     .name {
@@ -40,21 +48,26 @@
 
     .author {
         display: block;
+        font-size: 0.9em;
+    }
+
+    .count {
+        font-size: 0.7em;
+        margin-top: 6px;
+        display: block;
     }
 }
 
 .annotations {
-    margin-left: 5px;
+    padding: 0 35px;
+    margin-top: 5px;
 
     flex: 2;
-
-    background-color: #f4f5f6;
 }
 
 .annotation {
     margin-bottom: 5px;
-    padding: 3px;
-
+    padding: 10px 0;
     border-bottom: 1px solid #eaeaea;
 
     mark {
@@ -84,4 +97,24 @@
     &.style-5 mark {
         background-color: #cbb9f9;
     }
+
+    .info {
+        font-size: 0.7em;
+        margin-top: 12px;
+        display: block;
+        color: #77777c;
+
+        .divider {
+            margin: 0 5px;
+            font-weight: bold;
+        }
+    }
+}
+
+@font-face {
+    font-family: 'SF Pro';
+    font-style: normal;
+    font-weight: normal;
+    src: local('SF Pro'),
+      url('./assets/SF-Pro.ttf') format('ttf');
 }
