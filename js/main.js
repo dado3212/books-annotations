@@ -59,7 +59,7 @@ const createWindow = () => {
         },
     });
 
-    win.webContents.openDevTools();
+    // win.webContents.openDevTools();
 
     win.loadFile('html/index.html');
 
@@ -96,6 +96,9 @@ ipcMain.handle('get-device-name', async (event) => {
         return;
     }
     device = deviceManager.getDevice();
+    if (device === null) {
+        event.sender.send('device-name', null);
+    }
 
     libijs.services.getService(device, "afc").done(afcClient => {
         return meaco(function* doAfcExample() {

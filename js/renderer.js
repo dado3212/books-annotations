@@ -120,25 +120,24 @@ async function populate() {
 }
 
 ipcRenderer.on('device-name', function (_, name) {
-    console.log(name);
     document.getElementById('refresh').disabled = false;
 
     $('#devices button.device').remove();
 
-    // if (result.error && result.stderr.includes('No device found.')) {
-    //     $('#devices span')[0].innerHTML = 'No device found. Please attach device.';
-    // } else {
-    $('#devices span')[0].innerHTML = 'Select device.';
-    const button = $(`
-        <button class="device">
-            ${name}
-        </button>
-    `);
-    button.on('click', async () => {
-        await ipcRenderer.invoke('read-plist', '/Books/Purchases/Purchases.plist', 'books');
-    });
-    $('#devices').append(button);
-    // }
+    if (name === null) {
+        $('#devices span')[0].innerHTML = 'No device found. Please attach device.';
+    } else {
+        $('#devices span')[0].innerHTML = 'Select device.';
+        const button = $(`
+            <button class="device">
+                ${name}
+            </button>
+        `);
+        button.on('click', async () => {
+            await ipcRenderer.invoke('read-plist', '/Books/Purchases/Purchases.plist', 'books');
+        });
+        $('#devices').append(button);
+    }
 });
 
 async function doStuff() {
