@@ -1,6 +1,5 @@
-const { app, BrowserWindow, ipcMain, globalShortcut } = require('electron');
+const { app, BrowserWindow, ipcMain } = require('electron');
 const util = require('util');
-const exec = util.promisify(require('child_process').exec);
 const libijs = require('../libijs');
 
 const meaco = require("meaco");
@@ -8,59 +7,64 @@ const meaco = require("meaco");
 var deviceManager = null;
 var device = null;
 var deviceName = null;
+var mainWindow;
 
-function testPair (device) {
-  return meaco(function* doTestAfc() {
-    console.log(device);
-    const lockdownClient = yield libijs.lockdownd.getClient(device);
+function testPair(device) {
+    return meaco(function* doTestAfc() {
+        console.log(device);
+        const lockdownClient = yield libijs.lockdownd.getClient(device);
 
-    const pairRecord = yield lockdownClient.__usbmuxdClient.readPairRecord(device.udid);
-    console.log(pairRecord)
-    
-    // TODO: figure out a better way to detect if paired
-    const afc = yield libijs.services.getService(device, "afc", lockdownClient);
+        const pairRecord = yield lockdownClient.__usbmuxdClient.readPairRecord(device.udid);
+        console.log(pairRecord)
 
-    if (!afc) {
-      console.log('not paired?');
-      // do the pairing thing
-      const response = yield lockdownClient.pair();
-      console.log(response);
-      return false;
-    }
+        // TODO: figure out a better way to detect if paired
+        const afc = yield libijs.services.getService(device, "afc", lockdownClient);
 
-    return true;
-  });
-  //const afc = yield libijs.services.getService(device, "afc");
+        if (!afc) {
+            console.log('not paired?');
+            // do the pairing thing
+            const response = yield lockdownClient.pair();
+            console.log(response);
+            return false;
+        }
+
+        return true;
+    });
+    //const afc = yield libijs.services.getService(device, "afc");
 }
 
-function runPair (device) {
-	testPair(device)
-	.error((e) => {
-		console.error('Error:', e);
-		process.exit(1);
-	})
-	.catch((e) => {
-		console.error('Caught:', e);
-		process.exit(1);
-	})
-	.done((result) => {
-    console.log('Result:', result);
-	});
+function runPair(device) {
+    testPair(device)
+        .error((e) => {
+            console.error('Error:', e);
+            process.exit(1);
+        })
+        .catch((e) => {
+            console.error('Caught:', e);
+            process.exit(1);
+        })
+        .done((result) => {
+            console.log('Result:', result);
+        });
 }
 
 const createWindow = () => {
-    const win = new BrowserWindow({
+    mainWindow = new BrowserWindow({
         width: 1000,
         height: 600,
         icon: __dirname + '/assets/icon.png',
         webPreferences: {
-          nodeIntegration: true,
-          contextIsolation: false,
-          enableRemoteModule: true,
+            nodeIntegration: true,
+            contextIsolation: false,
+            enableRemoteModule: true,
         },
     });
 
-    win.loadFile('html/index.html');
+    mainWindow.loadFile('html/index.html');
+
+    mainWindow.webContents.on('found-in-page', (event, result) => {
+        mainWindow.send('found-in-page', result);
+    });
 
     deviceManager = libijs.createClient().deviceManager;
     deviceManager.ready(() => {
@@ -107,16 +111,32 @@ ipcMain.handle('get-device-name', async (event) => {
             event.sender.send('device-name', deviceName);
         });
     });
-})
+});
 
-ipcMain.handle('run-command', async (event, command) => {
-    try {
-        const { stdout, stderr } = await exec(command);
-        return { error: false, stdout, stderr };
-    } catch (error) {
-        return { error: true, stdout: error.stdout, stderr: error.stderr };
+
+
+ipcMain.on('find-in-page', (e, text, options) => {
+    const sanitizedOptions = {};
+    for (const option of ['forward', 'findNext', 'matchCase']) {
+        if (option in options) {
+            sanitizedOptions[option] = !!options[option];
+        }
     }
-  });
+    const requestId = mainWindow.webContents.findInPage(text, sanitizedOptions);
+    e.returnValue = requestId;
+});
+
+ipcMain.on('stop-find-in-page', (e, action) => {
+    const validActions = [
+        'clearSelection',
+        'keepSelection',
+        'activateSelection',
+    ];
+    if (validActions.includes(action)) {
+        mainWindow.webContents.stopFindInPage(action);
+    }
+    e.returnValue = null;
+});
 
 app.on('window-all-closed', () => {
     if (process.platform !== 'darwin') {

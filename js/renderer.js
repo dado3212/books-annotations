@@ -1,9 +1,38 @@
 const { ipcRenderer } = require('electron');
-var fs = require('fs');
 var plist = require('plist');
+const ElectronFindInPage = require('electron-find').FindInPage;
 
 var listOfBooks = {};
 var currentHash = '';
+var findInPage;
+
+// Shim to expose webContents functionality to electron-find without @electron/remote
+const webContentsShim = {
+    findInPage: (text, options = {}) =>
+        ipcRenderer.sendSync('find-in-page', text, options),
+    stopFindInPage: (action) => {
+        ipcRenderer.sendSync('stop-find-in-page', action);
+    },
+    on: (eventName, listener) => {
+        if (eventName === 'found-in-page') {
+            // Tunnel with main.js
+            ipcRenderer.on('found-in-page', (_, result) => {
+                listener({ sender: this }, result);
+            });
+        }
+    },
+};
+
+class FindInPage extends ElectronFindInPage {
+    constructor(options = {}) {
+        super(webContentsShim, options);
+    }
+
+    openFindWindow() {
+        super.openFindWindow();
+    }
+}
+
 
 // Adapted from https://gist.github.com/mlitwin/1a5471ae2897c360914247bc8db6b57a
 function cfiToSortableValue(cfi) {
@@ -199,6 +228,14 @@ async function doStuff() {
     await ipcRenderer.invoke('get-device-name');
 }
 
+document.addEventListener('DOMContentLoaded', () => {
+    findInPage = new FindInPage({
+        inputFocusColor: '#ce9ffc',
+        textColor: '#212121',
+        parentElement: document.querySelector('.annotations'),
+    });
+});
+
 $(document).ready(async () => {
     $('#refresh').on('click', doStuff);
     doStuff();
@@ -206,11 +243,7 @@ $(document).ready(async () => {
     // Cmd + F hijacking
     $(window).keydown(function (e) {
         if (e.keyCode == 70 && (e.ctrlKey || e.metaKey)) {
-            const searchBar = document.getElementById('search');
-            if (searchBar) {
-                searchBar.focus();
-                searchBar.select();
-            }
+            findInPage?.openFindWindow();
         }
     });
 

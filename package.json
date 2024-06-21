@@ -18,6 +18,7 @@
   "dependencies": {
     "@electron/remote": "^2.1.2",
     "@lwahonen/ref-napi": "^4.0.8",
+    "electron-find": "^1.0.7",
     "jarvis-emitter": "^2.1.4",
     "meaco": "^1.0.3",
     "plist": "^3.1.0",
