@@ -15,7 +15,7 @@ const JarvisEmitter = require("jarvis-emitter");
 const meaco = require("meaco");
 
 // External Modules
-const ref = require("ref");
+const ref = require("@lwahonen/ref-napi");
 const fs = require("fs-extra");
 const path = require("path");
 const diskusage = require("diskusage");

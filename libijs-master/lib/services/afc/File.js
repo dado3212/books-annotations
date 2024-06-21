@@ -12,7 +12,7 @@ const protocol = require("./protocol");
 const meaco = require("meaco");
 
 // External Modules
-const ref = require("ref");
+const ref = require("@lwahonen/ref-napi");
 const debug = require("debug")("libijs:services:afc");
 
 /**

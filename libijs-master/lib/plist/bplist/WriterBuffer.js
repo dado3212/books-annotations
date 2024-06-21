@@ -9,7 +9,7 @@
 const NumberSizes = require("./format").numberSizes;
 
 // For writeUInt64BE/writeInt64BE
-const ref = require("ref-napi");
+const ref = require("@lwahonen/ref-napi");
 
 /******************************************************************************
  * Consts

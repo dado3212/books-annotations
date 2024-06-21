@@ -6,9 +6,9 @@
 /******************************************************************************
  * Required Modules
  *****************************************************************************/
-const ref = require("ref-napi");
-const StructType = require("ref-struct");
-const ArrayType = require("ref-array");
+const ref = require("@lwahonen/ref-napi");
+const StructType = require("ref-struct-di")(ref);
+const ArrayType = require("ref-array-di")(ref);
 
 /******************************************************************************
  * Consts and Types

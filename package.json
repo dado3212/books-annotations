@@ -15,9 +15,11 @@
   },
   "dependencies": {
     "@electron/remote": "^2.1.2",
+    "@lwahonen/ref-napi": "^4.0.8",
     "jarvis-emitter": "^2.1.4",
     "meaco": "^1.0.3",
     "plist": "^3.1.0",
-    "ref-napi": "^3.0.3"
+    "ref-array-di": "^1.2.2",
+    "ref-struct-di": "^1.1.1"
   }
 }

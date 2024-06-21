@@ -18,7 +18,7 @@ const meaco = require("meaco");
 const JarvisEmitter = require("jarvis-emitter");
 
 // External Modules
-const ref = require("ref");
+const ref = require("@lwahonen/ref-napi");
 const fs = require("fs-extra");
 const debug = require("debug")("libijs:services:afc");
 

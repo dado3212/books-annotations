@@ -68,6 +68,8 @@ pymobiledevice3 afc ls Books/Purchases/b05fa8d59ac2dca7e59072dc006314baMdU2kFUVs
 
 ## PymobileDevice code that should be adapted
 
+31.0.2 doesn't work with ref-napi, using fork
+
 Searching the magic key 'CFA6LPAA' gave me https://github.com/mceSystems/libijs/ and https://github.com/appium/appium-ios-device, both of which are attempts to basically port this to Node.JS. I am going to take the bits I need. Apple, for the love of god, release an actual API for this on MacOS you monsters.
 
 https://github.com/doronz88/pymobiledevice3/blob/master/pymobiledevice3/cli/afc.py#L31-L32
