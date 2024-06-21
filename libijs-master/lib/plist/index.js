@@ -29,6 +29,7 @@ const parse = function parse(buffer) {
 		return bplistReader.read(buffer);
 	}
 
+	console.log('plist parse');
 	return plistNative.parse(buffer);
 };
 
@@ -52,6 +53,7 @@ const readFile = function readFile(filePath) {
  * @returns {Buffer|string}
  */
 const createXml = function createXml(obj, asString = true) {
+	console.log('plist createXML', asString);
 	return asString ? plist.build(obj) : plistNative.build(obj);
 };
 
@@ -74,6 +76,7 @@ const createBinary = function createBinary(obj) {
  * @returns {JarvisEmitter}
  */
 const writeXmlFile = function writeXmlFile(obj, filePath, fileOptions = null) {
+	console.log('plist build');
 	return JarvisEmitter.emitify(fs.writeFile, false)(filePath, plistNative.build(obj), fileOptions);
 };
 

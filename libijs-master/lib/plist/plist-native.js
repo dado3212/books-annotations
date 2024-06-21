@@ -1,4 +1,3 @@
-// var libxml = require('libxmljs');
 const xmlBufferToString = require('xml-buffer-tostring');
 const plist = require('plist');
 

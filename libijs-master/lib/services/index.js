@@ -59,11 +59,6 @@ const SERVICES = {
 		module: "./SpringBoardServices",
 		sendEscrowBag: false,
 	},
-	MCInstall: {
-		serviceName: "com.apple.mobile.MCInstall",
-		module: "./MCInstall",
-		sendEscrowBag: false,
-	},
 };
 
 /**

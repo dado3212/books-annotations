@@ -18,9 +18,9 @@ function testPair (device) {
     console.log(pairRecord)
     
     // TODO: figure out a better way to detect if paired
-    const MCInstall = yield libijs.services.getService(device, 'MCInstall', lockdownClient);
+    const afc = yield libijs.services.getService(device, "afc", lockdownClient);
 
-    if (!MCInstall) {
+    if (!afc) {
       console.log('not paired?');
       // do the pairing thing
       const response = yield lockdownClient.pair();
