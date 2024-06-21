@@ -16,11 +16,9 @@ function cfiToSortableValue(cfi) {
 // Should make this use await/async pattern, but meaco makes this annoying, so
 // I haven't done it yet.
 ipcRenderer.on('plist-data', async function (_, info) {
-    console.log(info);
 
     if (info.file == 'books') {
         let parsed = plist.parse(info.data)['Books'];
-        console.log(plist.parse(info.data));
 
         parsed.forEach(book => {
             listOfBooks[book['Package Hash']] = {
@@ -66,6 +64,25 @@ ipcRenderer.on('plist-data', async function (_, info) {
     }
 });
 
+function updateAnnotationsForSearch() {
+    // Get the search value
+    const search = $('#search').val();
+    // Iterate over all of the current annotations and set the status
+    document.querySelectorAll(`.annotation[data-hash="${currentHash}"]`).forEach(e => {
+        if (e.querySelector('mark.text').textContent.toLowerCase().includes(search.toLowerCase())) {
+            e.classList.remove('hidden');
+        } else {
+            e.classList.add('hidden');
+        }
+    });
+    // If there aren't any visible, show the 'no results' text
+    if (document.querySelectorAll('.annotation:not(.hidden)').length > 0) {
+        document.getElementById('no-results').classList.add('hidden');
+    } else {
+        document.getElementById('no-results').classList.remove('hidden');
+    }
+}
+
 async function populate() {
     //  Post-process (sort by location, remove those with no annotations)
     Object.keys(listOfBooks).forEach(bookHash => {
@@ -87,8 +104,6 @@ async function populate() {
 
     let booksList = $('.books');
     let annotationsList = $('.annotations');
-
-    console.log(listOfBooks);
 
     Object.keys(listOfBooks).sort((a, b) => listOfBooks[b]['annotations'].length - listOfBooks[a]['annotations'].length).forEach(bookHash => {
         let bookElement = $(`
@@ -124,9 +139,9 @@ async function populate() {
             }
 
             // Make the relevant annotations visible
-            let hash = bookElement.data('hash');
+            currentHash = bookElement.data('hash');
             $(`.annotation`).addClass('hidden');
-            $(`.annotation[data-hash="${hash}"]`).removeClass('hidden');
+            updateAnnotationsForSearch();
         });
 
         booksList.append(bookElement);
@@ -200,10 +215,13 @@ $(document).ready(async () => {
     function handleInputChange() {
         clearTimeout(timeout);
         timeout = setTimeout(() => {
-            $('#search').val();
-            // Get the current 
-            $(`.annotation`).addClass('hidden');
-            $(`.annotation[data-hash="${hash}"]`).removeClass('hidden');
+            updateAnnotationsForSearch();
+
+            // Reset the scroll to the top
+            document.querySelector('.annotations').scrollTo({
+                top: 0,
+                behavior: "instant",
+            });
         }, 300);
     }
 
