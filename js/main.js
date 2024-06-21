@@ -4,11 +4,10 @@ const exec = util.promisify(require('child_process').exec);
 const libijs = require('../libijs-master');
 
 const meaco = require("meaco");
-const JarvisEmitter = require("jarvis-emitter");
-const fs = require("fs-extra");
 
-const { lockdownd, services } = libijs;
-const { getService, MCInstall } = services;
+var deviceManager = null;
+var device = null;
+var deviceName = null;
 
 function testPair (device) {
   return meaco(function* doTestAfc() {
@@ -19,7 +18,7 @@ function testPair (device) {
     console.log(pairRecord)
     
     // TODO: figure out a better way to detect if paired
-    const MCInstall = yield getService(device, 'MCInstall', lockdownClient);
+    const MCInstall = yield libijs.services.getService(device, 'MCInstall', lockdownClient);
 
     if (!MCInstall) {
       console.log('not paired?');
@@ -46,7 +45,6 @@ function runPair (device) {
 	})
 	.done((result) => {
     console.log('Result:', result);
-		// process.exit(result ? 0 : 1);
 	});
 }
 
@@ -63,66 +61,53 @@ const createWindow = () => {
 
     win.webContents.openDevTools();
 
-
     win.loadFile('html/index.html');
 
-    // const deviceManager = libijs.createClient().deviceManager;
-    // deviceManager.ready(() => {
-    // console.log('ready')
-    // const device = deviceManager.getDevice();
-    // if (!device) {
-    //     deviceManager.attached(runPair);
-    // } else {
-    //     runPair(device);
-    // }
-    // });
+    deviceManager = libijs.createClient().deviceManager;
+    deviceManager.ready(() => {
+        device = deviceManager.getDevice();
+
+        libijs.services.getService(device, "afc").done(afcClient => {
+            return meaco(function* doAfcExample() {
+                const lockdownClient = yield libijs.lockdownd.getClient(device);
+                const deviceInfo = yield lockdownClient.getValue(null, null);
+                deviceName = deviceInfo['DeviceName'];
+            });
+        });
+    });
 };
 
 app.whenReady().then(createWindow);
 
-ipcMain.handle('show-open-dialog', async (event, options) => {
-    const result = await dialog.showOpenDialog(options);
-    return result;
+ipcMain.handle('read-plist', async (event, filePath, name) => {
+    libijs.services.getService(device, "afc").done(afcClient => {
+        return meaco(function* doAfcExample() {
+            event.sender.send('plist-data', {
+                file: name,
+                data: (yield afcClient.readFile(filePath)).toString(),
+            });
+        });
+    });
 });
 
-const afcExample = function afcExample(afcClient) {
-    return meaco(function* doAfcExample() {
-        // List a remote dir
-        console.log((yield afcClient.readFile("/Books/com.apple.ibooks-sync.plist")).toString());
-        // yield afcClient.walk("/", false, true)
-        //     .item((item) => { console.log(`${item.relativeToRoot} - ${item.stats.st_size} bytes`); });
+ipcMain.handle('get-device-name', async (event) => {
+    if (deviceName !== null) {
+        event.sender.send('device-name', deviceName);
+        return;
+    }
+    device = deviceManager.getDevice();
 
-        // Download a file
-        // yield afcClient.downloadFile("DCIM/100APPLE/IMG_0001.JPG", "./IMG_0001.JPG");
-
-        // // Use the stream api to read a file
-        // console.log("\nVoiceMemos.plist:");
-        // const remoteFile = yield afcClient.openFileAsReadableStream("iTunes_Control/iTunes/VoiceMemos.plist");
-        // const fileReadDone = new JarvisEmitter();
-        // remoteFile
-        //     .on("data", (data) => {
-        //         console.log(data.toString());
-        //     })
-        //     .on("end", () => {
-        //         fileReadDone.callDone();
-        //     });
-        // yield fileReadDone;
-
-        // Disconnect from the afcd service
-        yield afcClient.close();
+    libijs.services.getService(device, "afc").done(afcClient => {
+        return meaco(function* doAfcExample() {
+            const lockdownClient = yield libijs.lockdownd.getClient(device);
+            const deviceInfo = yield lockdownClient.getValue(null, null);
+            deviceName = deviceInfo['DeviceName'];
+            event.sender.send('device-name', deviceName);
+        });
     });
-};
+})
 
 ipcMain.handle('run-command', async (event, command) => {
-
-    const deviceManager = libijs.createClient().deviceManager;
-    console.log(deviceManager);
-    deviceManager.ready(() => {
-        const device = deviceManager.getDevice();
-        console.log('hit');
-        libijs.services.getService(device, "afc").done(afcExample);
-    });
-
     try {
         const { stdout, stderr } = await exec(command);
         return { error: false, stdout, stderr };
