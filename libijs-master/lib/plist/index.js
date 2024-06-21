@@ -15,7 +15,7 @@ const bplistReader = require("./bplist/Reader");
 const JarvisEmitter = require("jarvis-emitter");
 
 // External Modules
-const plistNative = require("./plist-native");
+const xmlBufferToString = require('xml-buffer-tostring');
 const plist = require("plist");
 const fs = require("fs");
 
@@ -29,8 +29,7 @@ const parse = function parse(buffer) {
 		return bplistReader.read(buffer);
 	}
 
-	console.log('plist parse');
-	return plistNative.parse(buffer);
+	return plist.parse(xmlBufferToString(buffer));
 };
 
 /**
@@ -52,9 +51,8 @@ const readFile = function readFile(filePath) {
  * @param {any} obj
  * @returns {Buffer|string}
  */
-const createXml = function createXml(obj, asString = true) {
-	console.log('plist createXML', asString);
-	return asString ? plist.build(obj) : plistNative.build(obj);
+const createXml = function createXml(obj) {
+	return plist.build(obj);
 };
 
 /**
@@ -65,19 +63,6 @@ const createXml = function createXml(obj, asString = true) {
  */
 const createBinary = function createBinary(obj) {
 	return bplistWriter(obj);
-};
-
-/**
- *
- *
- * @param {any} obj
- * @param {string} filePath
- * @param {Object} [fileOptions=null]
- * @returns {JarvisEmitter}
- */
-const writeXmlFile = function writeXmlFile(obj, filePath, fileOptions = null) {
-	console.log('plist build');
-	return JarvisEmitter.emitify(fs.writeFile, false)(filePath, plistNative.build(obj), fileOptions);
 };
 
 /**
@@ -100,6 +85,5 @@ module.exports = {
 	readFile,
 	createXml,
 	createBinary,
-	writeXmlFile,
 	writeBinaryFile,
 };

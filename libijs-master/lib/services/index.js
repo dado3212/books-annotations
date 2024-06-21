@@ -34,11 +34,6 @@ const SERVICES = {
 		module: "./DiagnosticsRelay",
 		sendEscrowBag: false,
 	},
-	mobileactivationd: {
-		serviceName: "com.apple.mobileactivationd",
-		module: "./MobileActivation",
-		sendEscrowBag: true,
-	},
 	mobilebackup2: {
 		serviceName: "com.apple.mobilebackup2",
 		module: "./MobileBackup2",
