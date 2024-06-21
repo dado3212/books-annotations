@@ -97,9 +97,17 @@ async function populate() {
                 `);
 
         bookElement.on('click', (e) => {
-            // Highlight the current book
-            $(`.book.selected`).removeClass('selected');
-            bookElement.addClass('selected');
+            // If it's not highlighted, highlight it
+            if (!bookElement.hasClass('selected')) {
+                $(`.book.selected`).removeClass('selected');
+                bookElement.addClass('selected');
+            } else {
+                // Else, take it as a cue to scroll to top
+                document.querySelector('.annotations').scrollTo({
+                    top: 0,
+                    behavior: "smooth",
+                });
+            }
 
             // Make the relevant annotations visible
             let hash = bookElement.data('hash');
@@ -120,11 +128,11 @@ async function populate() {
             if (annotation['chapter'] !== null) {
                 annotationElement.find('.info').append($(`<span class="chapter">${annotation['chapter']}</span><span class="divider">·</span>`))
             }
-            let formattedDate = (new Date(annotation['date'] * 1000)).toLocaleDateString('en-US', { 
-                weekday: 'long', 
-                year: 'numeric', 
-                month: 'long', 
-                day: 'numeric' 
+            let formattedDate = (new Date(annotation['date'] * 1000)).toLocaleDateString('en-US', {
+                weekday: 'long',
+                year: 'numeric',
+                month: 'long',
+                day: 'numeric'
             });
             annotationElement.find('.info').append($(`<span class="date">${formattedDate}</span>`))
             annotationsList.append(annotationElement);
