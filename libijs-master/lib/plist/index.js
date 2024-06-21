@@ -8,7 +8,6 @@
 /******************************************************************************
  * Required Modules
  *****************************************************************************/
-const bplistWriter = require("./bplist/Writer").write;
 const bplistReader = require("./bplist/Reader");
 
 // mce Modules
@@ -55,28 +54,6 @@ const createXml = function createXml(obj) {
 	return plist.build(obj);
 };
 
-/**
- *
- *
- * @param {any} obj
- * @returns {Buffer}
- */
-const createBinary = function createBinary(obj) {
-	return bplistWriter(obj);
-};
-
-/**
- *
- *
- * @param {any} obj
- * @param {string} filePath
- * @param {Object} [fileOptions=null]
- * @returns {JarvisEmitter}
- */
-const writeBinaryFile = function writeBinaryFile(obj, filePath, fileOptions = null) {
-	return JarvisEmitter.emitify(fs.writeFile, false)(filePath, bplistWriter(obj), fileOptions);
-};
-
 /******************************************************************************
  * Exports
  *****************************************************************************/
@@ -84,6 +61,4 @@ module.exports = {
 	parse,
 	readFile,
 	createXml,
-	createBinary,
-	writeBinaryFile,
 };
