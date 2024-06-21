@@ -3,6 +3,8 @@ var plist = require('plist');
 
 var listOfBooks = {};
 var searching = false;
+var currentSearch = '';
+var requestId;
 
 // Adapted from https://gist.github.com/mlitwin/1a5471ae2897c360914247bc8db6b57a
 function cfiToSortableValue(cfi) {
@@ -186,6 +188,10 @@ async function doStuff() {
 //     });
 // });
 
+ipcRenderer.on('found-in-page', (_, result) => {
+    document.querySelector('.search .progress').innerHTML = `${result['activeMatchOrdinal']}/${result['matches']}`;
+});
+
 $(document).ready(async () => {
     $('#refresh').on('click', doStuff);
     doStuff();
@@ -198,6 +204,8 @@ $(document).ready(async () => {
                 searchBar.focus();
                 searchBar.select();
             }
+        } else if (e.keyCode == 13) {
+            ipcRenderer.sendSync('find-in-page', currentSearch, { forward: !e.shiftKey, findNext: false, matchCase: false });
         }
     });
 
@@ -207,23 +215,21 @@ $(document).ready(async () => {
         clearTimeout(timeout);
         timeout = setTimeout(() => {
             const search = $('#search').val();
-            if (search !== '') {
+            if (currentSearch == search) {
+                return;
+            }
+            currentSearch = search;
+            if (currentSearch !== '') {
                 searching = true;
-                ipcRenderer.sendSync('find-in-page', search, { findNext: true });
+                document.querySelector('.search .progress').classList.remove('hidden');
+                ipcRenderer.sendSync('find-in-page', currentSearch, { forward: true, findNext: true, matchCase: false });
             } else {
                 searching = false;
+                document.querySelector('.search .progress').classList.add('hidden');
                 ipcRenderer.sendSync('stop-find-in-page', { clearSelection: true });
             }
         }, 300);
     }
 
     $('#search').on('input', handleInputChange);
-    $('#search').on('keydown', (e) => {
-        console.log(e.keyCode, searching, document.activeElement.id);
-        if (e.keyCode == 13) { // && searching && document.activeElement.id === 'search') {
-            e.preventDefault();
-            // Enter while searching
-            ipcRenderer.sendSync('find-in-page', $('#search').val(), { forward: !e.shiftKey, matchCase: false, findNext: true });
-        }
-    });
 });

@@ -121,13 +121,27 @@ body {
     margin: 0 10px;
 }
 
-#search {
-    border: none;
-    padding: 8px 15px;
-    border-radius: 25px;
-    outline: none;
-    width: 300px;
-    background-color: #eceef0;
+.search {
+    #search {
+        border: none;
+        padding: 8px 15px;
+        border-radius: 25px;
+        outline: none;
+        width: 300px;
+        background-color: #eceef0;
+    }
+
+    .progress {
+        position: absolute;
+        right: 28px;
+        top: 17px;
+        color: #666666;
+        font-size: 0.8em;
+
+        &.hidden {
+            display: none;
+        }
+    }
 }
 
 #no-results {

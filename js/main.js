@@ -56,7 +56,6 @@ const createWindow = () => {
         webPreferences: {
             nodeIntegration: true,
             contextIsolation: false,
-            enableRemoteModule: true,
         },
     });
 
@@ -120,8 +119,7 @@ ipcMain.on('find-in-page', (e, text, options) => {
             sanitizedOptions[option] = !!options[option];
         }
     }
-    console.log(text, sanitizedOptions);
-    const requestId = mainWindow.webContents.findInPage(text, sanitizedOptions);
+    const requestId = mainWindow.webContents.findInPage(text, options);
     e.returnValue = requestId;
 });
 
