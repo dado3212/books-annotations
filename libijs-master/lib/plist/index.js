@@ -15,6 +15,7 @@ const bplistReader = require("./bplist/Reader");
 const JarvisEmitter = require("jarvis-emitter");
 
 // External Modules
+const plistNative = require("./plist-native");
 const plist = require("plist");
 const fs = require("fs");
 
@@ -28,7 +29,7 @@ const parse = function parse(buffer) {
 		return bplistReader.read(buffer);
 	}
 
-	return plist.parse(buffer);
+	return plistNative.parse(buffer);
 };
 
 /**
@@ -51,7 +52,7 @@ const readFile = function readFile(filePath) {
  * @returns {Buffer|string}
  */
 const createXml = function createXml(obj, asString = true) {
-	return asString ? plist.buildString(obj) : plist.build(obj);
+	return asString ? plist.build(obj) : plistNative.build(obj);
 };
 
 /**
@@ -73,7 +74,7 @@ const createBinary = function createBinary(obj) {
  * @returns {JarvisEmitter}
  */
 const writeXmlFile = function writeXmlFile(obj, filePath, fileOptions = null) {
-	return JarvisEmitter.emitify(fs.writeFile, false)(filePath, plist.build(obj), fileOptions);
+	return JarvisEmitter.emitify(fs.writeFile, false)(filePath, plistNative.build(obj), fileOptions);
 };
 
 /**

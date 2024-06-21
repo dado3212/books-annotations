@@ -11,15 +11,19 @@
   "repository": "https://github.com/dado3212/books-annotations",
   "license": "MIT",
   "devDependencies": {
-    "electron": "^31.0.2"
+    "electron": "^31.0.2",
+    "electron-rebuild": "^3.2.9"
   },
   "dependencies": {
     "@electron/remote": "^2.1.2",
     "@lwahonen/ref-napi": "^4.0.8",
     "jarvis-emitter": "^2.1.4",
+    "libxmljs": "^1.0.11",
     "meaco": "^1.0.3",
     "plist": "^3.1.0",
     "ref-array-di": "^1.2.2",
-    "ref-struct-di": "^1.1.1"
+    "ref-struct-di": "^1.1.1",
+    "xml-buffer-tostring": "^0.2.0",
+    "xml2js": "^0.6.2"
   }
 }
