@@ -24,36 +24,6 @@ const SERVICES = {
 		module: "./afc",
 		sendEscrowBag: false,
 	},
-	syslog_relay: {
-		serviceName: "com.apple.syslog_relay",
-		module: "./SyslogRelay",
-		sendEscrowBag: false,
-	},
-	diagnostics_relay: {
-		serviceName: "com.apple.mobile.diagnostics_relay",
-		module: "./DiagnosticsRelay",
-		sendEscrowBag: false,
-	},
-	mobilebackup2: {
-		serviceName: "com.apple.mobilebackup2",
-		module: "./MobileBackup2",
-		sendEscrowBag: true,
-	},
-	notification_proxy: {
-		serviceName: "com.apple.mobile.notification_proxy",
-		module: "./NotificationProxy",
-		sendEscrowBag: false,
-	},
-	installation_proxy: {
-		serviceName: "com.apple.mobile.installation_proxy",
-		module: "./InstallationProxy",
-		sendEscrowBag: false,
-	},
-	springboardservices: {
-		serviceName: "com.apple.springboardservices",
-		module: "./SpringBoardServices",
-		sendEscrowBag: false,
-	},
 };
 
 /**
@@ -134,7 +104,5 @@ module.exports = {
 	getServices,
 
 	// Export service classes which have static properties needed by users
-	NotificationProxy: require("./NotificationProxy"),
 	AFC: require("./afc"),
-	DiagnosticsRelay: require("./DiagnosticsRelay"),
 };
