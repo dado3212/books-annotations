@@ -43,7 +43,7 @@ module.exports = {
 		REMOVE_PATH:               0x00000008,	// RemovePath
 		MAKE_DIR:                  0x00000009,	// MakeDir
 		GET_FILE_INFO:             0x0000000A,	// GetFileInfo
-		GET_DEVINFO:               0x0000000B,	// GetDeviceInfo
+		// GET_DEVINFO:               0x0000000B,	// GetDeviceInfo
 		WRITE_FILE_ATOM:           0x0000000C,	// WriteFileAtomic (tmp file+rename)
 		FILE_OPEN:                 0x0000000D,	// FileRefOpen
 		FILE_OPEN_RES:             0x0000000E,	// FileRefOpenResult
