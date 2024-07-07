@@ -31,7 +31,6 @@ body {
 
     .device {
         border: none;
-        background-color: rgba(0, 0, 0, 0.04);
         padding: 5px 10px;
         border-radius: 4px;
         margin: 0 5px;
@@ -42,10 +41,6 @@ body {
         i {
             margin-right: 5px;
         }
-
-        &:hover {
-            background-color: rgba(0, 0, 0, 0.09);
-        }
     }
 }
 
@@ -55,7 +50,6 @@ body {
     font-size: 1.1em;
     font-family: 'SF Pro', -apple-system, system-ui, sans-serif;
     cursor: pointer;
-    color: #272727;
 
     &:disabled {
         cursor: none;
@@ -66,7 +60,8 @@ body {
     display: flex;
     height: calc(100% - 79px);
     
-    border-top: 1px solid #eceef0;
+    border-top-width: 1px;
+    border-top-style: solid;
 }
 
 .books, .annotations {
@@ -76,20 +71,15 @@ body {
 .books {
     flex: 1;
 
-    border-right: 1px solid #eceef0;
+    border-right-width: 1px;
+    border-right-style: solid;
 }
 
 .book {
-    color: #272727;
     cursor: pointer;
 
     padding: 9px 0 9px 15px;
     line-height: 1.3em;
-
-    &.selected {
-        background-color: #3298db;
-        color: #ffffff;
-    }
 
     .name {
         font-weight: bold;
@@ -119,7 +109,8 @@ body {
 .annotation {
     margin-bottom: 5px;
     padding: 10px 0;
-    border-bottom: 1px solid #eaeaea;
+    border-bottom-width: 1px;
+    border-bottom-style: solid;
 
     mark {
         line-height: 1.3em;
@@ -127,26 +118,6 @@ body {
 
     &.hidden {
         display: none;
-    }
-
-    &.style-3 mark {
-        background-color: #f9df5a;
-    }
-
-    &.style-2 mark {
-        background-color: #a0befa;
-    }
-
-    &.style-1 mark {
-        background-color: #a6df94;
-    }
-
-    &.style-4 mark {
-        background-color: #fda8bd;
-    }
-
-    &.style-5 mark {
-        background-color: #cbb9f9;
     }
 
     .note {
@@ -157,7 +128,6 @@ body {
         font-size: 0.7em;
         margin-top: 12px;
         display: block;
-        color: #77777c;
 
         .divider {
             margin: 0 5px;
@@ -185,7 +155,6 @@ body {
         border-radius: 25px;
         outline: none;
         width: 300px;
-        background-color: #eceef0;
     }
 
     #back, #forward {
@@ -193,16 +162,10 @@ body {
         cursor: pointer;
         user-select: none;
 
-        color: #666666;
-
         border-radius: 3px;
         padding: 6px 4px;
 
         transition: all 0.4s ease;
-
-        &:hover {
-            background-color: rgba(0, 0, 0, 0.05);
-        }
     }
 
     #back {
@@ -219,7 +182,6 @@ body {
         position: absolute;
         right: 55px;
         top: 8px;
-        color: #666666;
         font-size: 0.8em;
     }
 
@@ -231,7 +193,6 @@ body {
 #no-results {
     text-align: center;
     margin-top: 20px;
-    color: #272727;
 
     &.hidden {
         display: none;
@@ -244,4 +205,163 @@ body {
     font-weight: normal;
     src: local('SF Pro'),
       url('./assets/SF-Pro.ttf') format('ttf');
+}
+
+@media (prefers-color-scheme: dark) {
+    body {
+        background-color: #232323;
+        color: #b9b9b9;
+    }
+
+    .devices .device {
+        color: #b9b9b9;
+        background-color: rgba(255, 255, 255, 0.1);
+    
+        &:hover {
+            background-color: rgba(255, 255, 255, 0.2);
+        }
+    }
+    
+    #refresh, .book, #no-results {
+        color: #b9b9b9;
+    }
+    
+    #content {
+        border-top-color: #383633;
+    }
+    
+    .books {
+        border-right-color: #383633;
+    }
+    
+    .book.selected {
+        background-color: #3298db;
+        color: #ffffff;
+    }
+    
+    .annotation {
+        border-bottom-color: #373738;
+
+        mark {
+            color: #d6cbb5;
+        }
+    
+        &.style-3 mark {
+            background-color: #82611b;
+        }
+    
+        &.style-2 mark {
+            background-color: #345190;
+        }
+    
+        &.style-1 mark {
+            background-color: #3c6621;
+        }
+    
+        &.style-4 mark {
+            background-color: #7a3d58;
+        }
+    
+        &.style-5 mark {
+            background-color: #5e4582;
+        }
+    
+        .info {
+            color: #9c9ca1;
+        }
+    }
+    
+    .search {
+        #search {
+            background-color: #383633;
+            color: #b9b9b9;
+            caret-color: #b9b9b9;
+        }
+    
+        #back, #forward {
+            color: #b9b9b9;
+    
+            &:hover {
+                background-color: rgba(255, 255, 255, 0.08);
+            }
+        }
+    
+        .progress {
+            color: #b9b9b9;
+        }
+    }
+}
+
+/* Default */
+@media (prefers-color-scheme: light) {
+    .devices .device {
+        background-color: rgba(0, 0, 0, 0.04);
+    
+        &:hover {
+            background-color: rgba(0, 0, 0, 0.09);
+        }
+    }
+    
+    #refresh, .book, #no-results {
+        color: #272727;
+    }
+    
+    #content {
+        border-top-color: #eceef0;
+    }
+    
+    .books {
+        border-right-color: #eceef0;
+    }
+    
+    .book.selected {
+        background-color: #3298db;
+        color: #ffffff;
+    }
+    
+    .annotation {
+        border-bottom-color: #eaeaea;
+    
+        &.style-3 mark {
+            background-color: #f9df5a;
+        }
+    
+        &.style-2 mark {
+            background-color: #a0befa;
+        }
+    
+        &.style-1 mark {
+            background-color: #a6df94;
+        }
+    
+        &.style-4 mark {
+            background-color: #fda8bd;
+        }
+    
+        &.style-5 mark {
+            background-color: #cbb9f9;
+        }
+    
+        .info {
+            color: #77777c;
+        }
+    }
+    
+    .search {
+        #search {
+            background-color: #eceef0;
+        }
+    
+        #back, #forward {
+            color: #666666;
+    
+            &:hover {
+                background-color: rgba(0, 0, 0, 0.05);
+            }
+        }
+    
+        .progress {
+            color: #666666;
+        }
+    }
 }
