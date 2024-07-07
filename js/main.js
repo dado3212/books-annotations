@@ -19,6 +19,7 @@ const createWindow = () => {
             nodeIntegration: true,
             contextIsolation: false,
         },
+        titleBarStyle: 'hidden',
     });
 
     mainWindow.loadFile('html/index.html');
@@ -66,6 +67,7 @@ ipcMain.handle('read-plist', async (event, filePath, name) => {
 function sendDevice(event) {
     let device = deviceManager.getDevice();
     if (device == null) {
+        event.sender.send('debug-log', 'Device is null.');
         event.sender.send('device-name', { success: false, message: 'No device found. Please attach device.' });
         return;
     }
@@ -87,6 +89,7 @@ function sendDevice(event) {
 ipcMain.handle('fetch-devices', async (event) => {
     // If it's not ready, then enqueue for after
     if (!isDeviceManagerReady) {
+        event.sender.send('debug-lug', 'Device manager not read yet, will attempt once finished.');
         onDeviceManagerReady = () => {
             sendDevice(event)
         };

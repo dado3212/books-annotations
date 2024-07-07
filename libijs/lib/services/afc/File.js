@@ -84,9 +84,16 @@ class File {
 				debug("readAll: Failed to get file info");
 				return null;
 			}
-			const fileSize = parseInt(fileInfo.st_size, 10);
-
-			return yield this.read(fileSize);
+			let fileSize = parseInt(fileInfo.st_size, 10);
+			// Reading it all will fail because we can only read 4MB chunks at a time
+			const chunkSize = 1024 * 1024 * 4; // 4194304 bytes
+			let bufferChunks = [];
+			while (fileSize > chunkSize) {
+				bufferChunks.push(yield this.read(chunkSize));
+				fileSize -= chunkSize;
+			}
+			bufferChunks.push(yield this.read(fileSize));
+			return Buffer.concat(bufferChunks);
 		}.bind(this));
 	}
 

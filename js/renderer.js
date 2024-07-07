@@ -35,7 +35,6 @@ ipcRenderer.on('plist-data', async function (_, info) {
         await ipcRenderer.invoke('read-plist', '/Books/com.apple.ibooks-sync.plist', 'annotations');
     } else if (info.file == 'annotations') {
         let parsed = plist.parse(info.data);
-
         let bookmarks = parsed[Object.keys(parsed)[0]]['Bookmarks'];
 
         bookmarks.forEach(bookmark => {
@@ -163,6 +162,10 @@ async function populate() {
         });
     });
 }
+
+ipcRenderer.on('debug-log', function (_, data) {
+    console.log(data);
+});
 
 ipcRenderer.on('error', function (_, error) {
     $('.devices span')[0].innerHTML = error;

@@ -2,6 +2,18 @@ html {
     font-family: 'SF Pro', -apple-system, system-ui, sans-serif;
 }
 
+#titlebar {
+    height: 28px;
+    line-height: 28px;
+    font-size: 14px;
+    text-align: center;
+    vertical-align: middle;
+    
+    -webkit-app-region: drag;    /* Allow user to drag the window using this titlebar */
+    -webkit-user-select: none;   /* Prevent user from selecting things */
+    user-select: none;
+}
+
 body {
     margin: 0px;
     display: flex;
@@ -52,7 +64,7 @@ body {
 
 #content {
     display: flex;
-    height: calc(100% - 51px);
+    height: calc(100% - 79px);
     
     border-top: 1px solid #eceef0;
 }
