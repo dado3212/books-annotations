@@ -1,10 +1,11 @@
 # <img src="/assets/icon.png?raw=true" width="30" alt="Logo"/> Books Annotations
 
-The Books app on iPhone (previously named iBooks) allows you to highlight text and leave notes. Unfortunately there's no good way to export these, as the information isn't stored in the ePubs themselves. The information <b>is</b> saved in the Media folder though, which is accessible from iPhones over USB. I built an app to read this into a searchable UI without having to install a bunch of software or pore through full backups. You can download the [MacOS Electron app here](https://github.com/dado3212/books-annotations/releases/tag/v1.0.0).
+The Books app on iPhone (previously named iBooks) allows you to highlight text and leave notes. Unfortunately there's no good way to export these, as the information isn't stored in the ePubs themselves. The information <b>is</b> saved in the Media folder though, which is accessible from iPhones over USB. I built an app to read this into a searchable UI without having to install a bunch of software or pore through full backups. You can download the [MacOS Electron app here](https://github.com/dado3212/books-annotations/releases/tag/v1.1.0).
 
-<img width="1112" alt="Screenshot of application showing off search and annotation capabilities" src="https://github.com/dado3212/books-annotations/assets/8919256/d9060d19-7315-4e7c-bb0a-264c68fd7f42">
+<img width="1112" alt="Screenshot of application showing off search and annotation capabilities" src="https://github.com/dado3212/books-annotations/assets/8919256/e140e913-c28f-45b7-b90b-541804f3acb7">
 
 ## Books App Information
+
 If you're trying to do something similar, I hope this code is useful even if you go for a different export approach. You can do this manually with [iExplorer]( https://macroplant.com/iexplorer/download/mac/complete/4.6.0) or libraries based on [libimobiledevice](https://libimobiledevice.org/). I found [pymobiledevice3](https://github.com/doronz88/pymobiledevice3) to be the easiest to install, and it provides a great Python API.
 
 There's two main files that my code reads from.
