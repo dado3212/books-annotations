@@ -8,9 +8,10 @@ html {
     font-size: 14px;
     text-align: center;
     vertical-align: middle;
-    
-    -webkit-app-region: drag;    /* Allow user to drag the window using this titlebar */
-    -webkit-user-select: none;   /* Prevent user from selecting things */
+
+    /* Allow user to drag the window using this titlebar */
+    -webkit-app-region: drag;
+    -webkit-user-select: none;
     user-select: none;
 }
 
@@ -38,6 +39,11 @@ body {
 
         transition: all 0.3s ease;
 
+        &.loading {
+            background-size: 50px 50px;
+            animation: loads 1s linear infinite;
+        }
+
         i {
             margin-right: 5px;
         }
@@ -59,12 +65,13 @@ body {
 #content {
     display: flex;
     height: calc(100% - 79px);
-    
+
     border-top-width: 1px;
     border-top-style: solid;
 }
 
-.books, .annotations {
+.books,
+.annotations {
     overflow-y: scroll;
 }
 
@@ -157,7 +164,8 @@ body {
         width: 300px;
     }
 
-    #back, #forward {
+    #back,
+    #forward {
         position: absolute;
         cursor: pointer;
         user-select: none;
@@ -204,7 +212,17 @@ body {
     font-style: normal;
     font-weight: normal;
     src: local('SF Pro'),
-      url('./assets/SF-Pro.ttf') format('ttf');
+        url('./assets/SF-Pro.ttf') format('ttf');
+}
+
+@keyframes loads {
+    0% {
+        background-position: 0 0;
+    }
+
+    100% {
+        background-position: -50px 0px;
+    }
 }
 
 @media (prefers-color-scheme: dark) {
@@ -216,76 +234,91 @@ body {
     .devices .device {
         color: #b9b9b9;
         background-color: rgba(255, 255, 255, 0.1);
-    
+
         &:hover {
             background-color: rgba(255, 255, 255, 0.2);
         }
+
+        &.loading {
+            background-image:
+                linear-gradient(-45deg,
+                    rgba(255, 255, 255, 0.1) 25%,
+                    transparent 25%,
+                    transparent 50%,
+                    rgba(255, 255, 255, 0.1) 50%,
+                    rgba(255, 255, 255, 0.1) 75%,
+                    transparent 75%,
+                    transparent);
+        }
     }
-    
-    #refresh, .book, #no-results {
+
+    #refresh,
+    .book,
+    #no-results {
         color: #b9b9b9;
     }
-    
+
     #content {
         border-top-color: #383633;
     }
-    
+
     .books {
         border-right-color: #383633;
     }
-    
+
     .book.selected {
         background-color: #3298db;
         color: #ffffff;
     }
-    
+
     .annotation {
         border-bottom-color: #373738;
 
         mark {
             color: #d6cbb5;
         }
-    
+
         &.style-3 mark {
             background-color: #82611b;
         }
-    
+
         &.style-2 mark {
             background-color: #345190;
         }
-    
+
         &.style-1 mark {
             background-color: #3c6621;
         }
-    
+
         &.style-4 mark {
             background-color: #7a3d58;
         }
-    
+
         &.style-5 mark {
             background-color: #5e4582;
         }
-    
+
         .info {
             color: #9c9ca1;
         }
     }
-    
+
     .search {
         #search {
             background-color: #383633;
             color: #b9b9b9;
             caret-color: #b9b9b9;
         }
-    
-        #back, #forward {
+
+        #back,
+        #forward {
             color: #b9b9b9;
-    
+
             &:hover {
                 background-color: rgba(255, 255, 255, 0.08);
             }
         }
-    
+
         .progress {
             color: #b9b9b9;
         }
@@ -296,70 +329,85 @@ body {
 @media (prefers-color-scheme: light) {
     .devices .device {
         background-color: rgba(0, 0, 0, 0.04);
-    
+
         &:hover {
             background-color: rgba(0, 0, 0, 0.09);
         }
+
+        &.loading {
+            background-image:
+                linear-gradient(-45deg,
+                    rgba(0, 0, 0, 0.1) 25%,
+                    transparent 25%,
+                    transparent 50%,
+                    rgba(0, 0, 0, 0.1) 50%,
+                    rgba(0, 0, 0, 0.1) 75%,
+                    transparent 75%,
+                    transparent);
+        }
     }
-    
-    #refresh, .book, #no-results {
+
+    #refresh,
+    .book,
+    #no-results {
         color: #272727;
     }
-    
+
     #content {
         border-top-color: #eceef0;
     }
-    
+
     .books {
         border-right-color: #eceef0;
     }
-    
+
     .book.selected {
         background-color: #3298db;
         color: #ffffff;
     }
-    
+
     .annotation {
         border-bottom-color: #eaeaea;
-    
+
         &.style-3 mark {
             background-color: #f9df5a;
         }
-    
+
         &.style-2 mark {
             background-color: #a0befa;
         }
-    
+
         &.style-1 mark {
             background-color: #a6df94;
         }
-    
+
         &.style-4 mark {
             background-color: #fda8bd;
         }
-    
+
         &.style-5 mark {
             background-color: #cbb9f9;
         }
-    
+
         .info {
             color: #77777c;
         }
     }
-    
+
     .search {
         #search {
             background-color: #eceef0;
         }
-    
-        #back, #forward {
+
+        #back,
+        #forward {
             color: #666666;
-    
+
             &:hover {
                 background-color: rgba(0, 0, 0, 0.05);
             }
         }
-    
+
         .progress {
             color: #666666;
         }

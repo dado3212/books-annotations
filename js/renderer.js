@@ -12,10 +12,10 @@ function cfiToSortableValue(cfi) {
     return cfi.split(/\D+/).filter(x => x !== '').map(Number);
 }
 
-async function startFetch() {
+async function startFetch(button) {
     let booksData = await ipcRenderer.invoke('read-plist', '/Books/Purchases/Purchases.plist', 'normal');
     if (booksData == null) {
-        populate();
+        populate(button);
         return;
     }
 
@@ -29,7 +29,7 @@ async function startFetch() {
 
     let annotationsData = await ipcRenderer.invoke('read-plist', '/Books/com.apple.ibooks-sync.plist', 'normal');
     if (annotationsData == null) {
-        populate();
+        populate(button);
         return;
     }
     let bookmarks = annotationsData[Object.keys(annotationsData)[0]]['Bookmarks'];
@@ -94,10 +94,10 @@ async function startFetch() {
         });
     }
 
-    populate();
+    populate(button);
 }
 
-async function populate() {
+async function populate(button) {
     //  Post-process (sort by location, remove those with no annotations)
     Object.keys(listOfBooks).forEach(bookHash => {
         if (listOfBooks[bookHash]['annotations'].length == 0) {
@@ -190,6 +190,7 @@ async function populate() {
             annotationsList.append(annotationElement);
         });
     });
+    button.removeClass('loading');
 }
 
 ipcRenderer.on('debug-log', function (_, data) {
@@ -215,13 +216,14 @@ ipcRenderer.on('device-name', function (_, info) {
             </button>
         `);
         button.on('click', async () => {
+            button.addClass('loading');
             $('.devices span')[0].innerHTML = '';
             // Reset the local list of books
             listOfBooks = {};
             $('.book').remove();
             $('.annotation').remove();
             // Try and start fetching
-            await startFetch();
+            await startFetch(button);
         });
         $('#devices').append(button);
     }
