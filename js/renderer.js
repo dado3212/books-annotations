@@ -3,6 +3,7 @@ const { ipcRenderer } = require('electron');
 var listOfBooks = {};
 var searching = false;
 var currentSearch = '';
+var newSearch = true;
 
 // Adapted from https://gist.github.com/mlitwin/1a5471ae2897c360914247bc8db6b57a
 function cfiToSortableValue(cfi) {
@@ -236,6 +237,10 @@ async function doStuff() {
 
 ipcRenderer.on('found-in-page', (_, result) => {
     document.querySelector('.search .progress').innerHTML = `${result['activeMatchOrdinal']}/${result['matches']}`;
+    if (newSearch) {
+        document.querySelector('.search input').focus();
+        newSearch = false;
+    }
 });
 
 $(document).ready(async () => {
@@ -289,6 +294,7 @@ $(document).ready(async () => {
             if (currentSearch !== '') {
                 searching = true;
                 document.querySelectorAll('.search span').forEach(a => a.classList.remove('hidden'));
+                newSearch = true;
                 ipcRenderer.sendSync('find-in-page', currentSearch, { forward: true, findNext: true, matchCase: false });
             } else {
                 searching = false;
