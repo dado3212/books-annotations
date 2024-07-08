@@ -39,28 +39,26 @@ const createWindow = () => {
 
 app.whenReady().then(createWindow);
 
-ipcMain.handle('read-plist', async (event, filePath, name) => {
+ipcMain.handle('read-plist', async (event, filePath) => {
     let device = deviceManager.getDevice();
 
-    libijs.services.getService(device, "afc").done(afcClient => {
-        return meaco(function* doAfcExample() {
-            const file = yield afcClient.readFile(filePath);
-            if (file == null) {
-                event.sender.send('plist-data', {
-                    file: name,
-                    data: null,
-                });
-            } else {
-                event.sender.send('plist-data', {
-                    file: name,
-                    data: file.toString(),
-                });
-            }
+    return new Promise((resolve) => {
+        libijs.services.getService(device, "afc").done(afcClient => {
+            return meaco(function* doAfcExample() {
+                const file = yield afcClient.readFile(filePath);
+                if (file == null) {
+                    resolve(null);
+                } else {
+                    resolve(file.toString());
+                }
+            });
+        }).error((e) => {
+            console.error('Error:', e);
+            resolve(null);
+        }).catch((e) => {
+            event.sender.send('error', 'Please unlock and trust this device.');
+            resolve(null);
         });
-    }).error((e) => {
-        console.error('Error:', e);
-    }).catch((e) => {
-        event.sender.send('error', 'Please unlock and trust this device.' );
     });
 });
 

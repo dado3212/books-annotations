@@ -13,60 +13,55 @@ function cfiToSortableValue(cfi) {
     return cfi.split(/\D+/).filter(x => x !== '').map(Number);
 }
 
-// Should make this use await/async pattern, but meaco makes this annoying, so
-// I haven't done it yet.
-ipcRenderer.on('plist-data', async function (_, info) {
-    // If the data is null, then we successfully read, but had no data
-    if (info.data == null) {
+async function startFetch() {
+    let booksData = await ipcRenderer.invoke('read-plist', '/Books/Purchases/Purchases.plist');
+    if (booksData == null) {
         populate();
         return;
     }
+    let parsed = plist.parse(booksData)['Books'];
 
-    if (info.file == 'books') {
-        let parsed = plist.parse(info.data)['Books'];
+    parsed.forEach(book => {
+        listOfBooks[book['Package Hash']] = {
+            'name': book['Name'],
+            'author': book['Artist'],
+            'annotations': [],
+        }
+    });
 
-        parsed.forEach(book => {
-            listOfBooks[book['Package Hash']] = {
-                'name': book['Name'],
-                'author': book['Artist'],
+    let annotationsData = await ipcRenderer.invoke('read-plist', '/Books/com.apple.ibooks-sync.plist');
+    parsed = plist.parse(annotationsData);
+    let bookmarks = parsed[Object.keys(parsed)[0]]['Bookmarks'];
+
+    bookmarks.forEach(bookmark => {
+        if (!('annotationSelectedText' in bookmark)) {
+            return;
+        }
+        let text = bookmark['annotationSelectedText']
+        if ('annotationRepresentativeText' in bookmark && bookmark['annotationRepresentativeText'].includes(text)) {
+            text = bookmark['annotationRepresentativeText']
+        }
+        hash = bookmark['annotationAssetID']
+
+        if (!(hash in listOfBooks)) {
+            listOfBooks[hash] = {
+                'name': hash,
+                'author': 'Unknown',
                 'annotations': [],
             }
-        });
-        await ipcRenderer.invoke('read-plist', '/Books/com.apple.ibooks-sync.plist', 'annotations');
-    } else if (info.file == 'annotations') {
-        let parsed = plist.parse(info.data);
-        let bookmarks = parsed[Object.keys(parsed)[0]]['Bookmarks'];
+        }
+        listOfBooks[hash]['annotations'].push({
+            'date': bookmark["annotationCreationDate"],
+            'text': text,
+            'location': bookmark['annotationLocation'],
+            'style': bookmark['annotationStyle'],
+            'note': ('annotationNote' in bookmark) ? bookmark['annotationNote'] : null,
+            'chapter': ('futureProofing5' in bookmark) ? bookmark['futureProofing5'] : null,
+        })
+    });
 
-        bookmarks.forEach(bookmark => {
-            if (!('annotationSelectedText' in bookmark)) {
-                return;
-            }
-            let text = bookmark['annotationSelectedText']
-            if ('annotationRepresentativeText' in bookmark && bookmark['annotationRepresentativeText'].includes(text)) {
-                text = bookmark['annotationRepresentativeText']
-            }
-            hash = bookmark['annotationAssetID']
-
-            if (!(hash in listOfBooks)) {
-                listOfBooks[hash] = {
-                    'name': hash,
-                    'author': 'Unknown',
-                    'annotations': [],
-                }
-            }
-            listOfBooks[hash]['annotations'].push({
-                'date': bookmark["annotationCreationDate"],
-                'text': text,
-                'location': bookmark['annotationLocation'],
-                'style': bookmark['annotationStyle'],
-                'note': ('annotationNote' in bookmark) ? bookmark['annotationNote'] : null,
-                'chapter': ('futureProofing5' in bookmark) ? bookmark['futureProofing5'] : null,
-            })
-        });
-
-        populate();
-    }
-});
+    populate();
+}
 
 async function populate() {
     //  Post-process (sort by location, remove those with no annotations)
@@ -192,7 +187,7 @@ ipcRenderer.on('device-name', function (_, info) {
             $('.book').remove();
             $('.annotation').remove();
             // Try and start fetching
-            await ipcRenderer.invoke('read-plist', '/Books/Purchases/Purchases.plist', 'books');
+            await startFetch();
         });
         $('#devices').append(button);
     }
