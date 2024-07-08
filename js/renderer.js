@@ -13,6 +13,30 @@ function cfiToSortableValue(cfi) {
     return cfi.split(/\D+/).filter(x => x !== '').map(Number);
 }
 
+// Takes in the ePub CFI and tries to divine a name. From
+// looking at examples, this only happens when [Book-Name]/[Book-Name]
+// appears, so look for that format, and strip the trailing -123 suffixes
+// the correspond to the chapters.
+function guessName(cfi) {
+    const regex = /\[([^\]]+)\]/g;
+    let matches = [];
+    let match;
+    
+    while ((match = regex.exec(cfi)) !== null) {
+        matches.push(match[1]);
+    }
+
+    if (matches.length <= 1) {
+        return null;
+    }
+
+    if (matches[1].includes(matches[0]) && !matches[0].startsWith('id')) {
+        return matches[0].replace(/[\d-]+$/, '');
+    } else {
+        return null;
+    }
+}
+
 async function startFetch(button) {
     let booksData = await ipcRenderer.invoke('read-plist', '/Books/Purchases/Purchases.plist', 'normal');
     if (booksData == null) {
@@ -59,6 +83,13 @@ async function startFetch(button) {
                 'name': hash,
                 'author': 'Unknown',
                 'annotations': [],
+            }
+        }
+        // Try and guess the name if it's in the location string
+        if (listOfBooks[hash]['name'] == hash) {
+            let possibleName = guessName(bookmark['annotationLocation']);
+            if (possibleName !== null) {
+                listOfBooks[hash]['name'] = possibleName;
             }
         }
         listOfBooks[hash]['annotations'].push({
