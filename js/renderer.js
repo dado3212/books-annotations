@@ -33,7 +33,16 @@ async function startFetch(button) {
         populate(button);
         return;
     }
-    let bookmarks = annotationsData[Object.keys(annotationsData)[0]]['Bookmarks'];
+    annotationsData = annotationsData[Object.keys(annotationsData)[0]];
+    // This is often called 'Bookmarks' but is also '4' for at least one user. Just
+    // loop over and find the array to make it more resilient. Choose the biggest array
+    // in case there are multiple (though I haven't seen that)
+    let bookmarks = [];
+    for (const [key, value] of Object.entries(annotationsData)) {
+        if (Array.isArray(value) && value.length > bookmarks.length) {
+            bookmarks = value;
+        }
+    }
 
     bookmarks.forEach(bookmark => {
         if (!('annotationSelectedText' in bookmark)) {
