@@ -1,5 +1,4 @@
 const { ipcRenderer } = require('electron');
-var plist = require('plist');
 
 var listOfBooks = {};
 var searching = false;
@@ -14,14 +13,13 @@ function cfiToSortableValue(cfi) {
 }
 
 async function startFetch() {
-    let booksData = await ipcRenderer.invoke('read-plist', '/Books/Purchases/Purchases.plist');
+    let booksData = await ipcRenderer.invoke('read-plist', '/Books/Purchases/Purchases.plist', 'normal');
     if (booksData == null) {
         populate();
         return;
     }
-    let parsed = plist.parse(booksData)['Books'];
 
-    parsed.forEach(book => {
+    booksData['Books'].forEach(book => {
         listOfBooks[book['Package Hash']] = {
             'name': book['Name'],
             'author': book['Artist'],
@@ -29,9 +27,12 @@ async function startFetch() {
         }
     });
 
-    let annotationsData = await ipcRenderer.invoke('read-plist', '/Books/com.apple.ibooks-sync.plist');
-    parsed = plist.parse(annotationsData);
-    let bookmarks = parsed[Object.keys(parsed)[0]]['Bookmarks'];
+    let annotationsData = await ipcRenderer.invoke('read-plist', '/Books/com.apple.ibooks-sync.plist', 'normal');
+    if (annotationsData == null) {
+        populate();
+        return;
+    }
+    let bookmarks = annotationsData[Object.keys(annotationsData)[0]]['Bookmarks'];
 
     bookmarks.forEach(bookmark => {
         if (!('annotationSelectedText' in bookmark)) {
@@ -59,6 +60,39 @@ async function startFetch() {
             'chapter': ('futureProofing5' in bookmark) ? bookmark['futureProofing5'] : null,
         })
     });
+
+    // Try and read the older annotations (though we mostly don't have names for these)
+    let oldData = await ipcRenderer.invoke('read-plist', '/Books/iBooksData2.plist', 'binary');
+    if (oldData !== null) {
+        bookmarks = oldData[0]['1.2']['BKBookmark'];
+
+        bookmarks.forEach(bookmark => {
+            if (!('annotationSelectedText' in bookmark)) {
+                return;
+            }
+            let text = bookmark['annotationSelectedText']
+            if ('annotationRepresentativeText' in bookmark && bookmark['annotationRepresentativeText'].includes(text)) {
+                text = bookmark['annotationRepresentativeText']
+            }
+            hash = bookmark['annotationAssetID']
+    
+            if (!(hash in listOfBooks)) {
+                listOfBooks[hash] = {
+                    'name': hash,
+                    'author': 'Unknown',
+                    'annotations': [],
+                }
+            }
+            listOfBooks[hash]['annotations'].push({
+                'date': bookmark["annotationCreationDate"],
+                'text': text,
+                'location': bookmark['annotationLocation'],
+                'style': bookmark['annotationStyle'],
+                'note': ('annotationNote' in bookmark) ? bookmark['annotationNote'] : null,
+                'chapter': ('futureProofing5' in bookmark) ? bookmark['futureProofing5'] : null,
+            })
+        });
+    }
 
     populate();
 }

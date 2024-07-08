@@ -1,6 +1,7 @@
 const { app, BrowserWindow, ipcMain } = require('electron');
-const util = require('util');
 const libijs = require('../libijs');
+const plist = require('plist');
+const bplist = require('bplist-parser');
 
 const meaco = require("meaco");
 
@@ -39,7 +40,7 @@ const createWindow = () => {
 
 app.whenReady().then(createWindow);
 
-ipcMain.handle('read-plist', async (event, filePath) => {
+ipcMain.handle('read-plist', async (event, filePath, type) => {
     let device = deviceManager.getDevice();
 
     return new Promise((resolve) => {
@@ -49,7 +50,11 @@ ipcMain.handle('read-plist', async (event, filePath) => {
                 if (file == null) {
                     resolve(null);
                 } else {
-                    resolve(file.toString());
+                    if (type === 'binary') {
+                        resolve(bplist.parseBuffer(file));
+                    } else {
+                        resolve(plist.parse(file.toString()));
+                    }
                 }
             });
         }).error((e) => {
