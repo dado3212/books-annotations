@@ -1,6 +1,6 @@
 # <img src="/assets/icon.png?raw=true" width="30" alt="Logo"/> Books Annotations
 
-The Books app on iPhone (previously named iBooks) allows you to highlight text and leave notes. Unfortunately there's no good way to export these, as the information isn't stored in the ePubs themselves. The information <b>is</b> saved in the Media folder though, which is accessible from iPhones over USB. I built an app to read this into a searchable UI without having to install a bunch of software or pore through full backups. You can download the [MacOS Electron app here](https://github.com/dado3212/books-annotations/releases/tag/v1.1.0).
+The Books app on iPhone (previously named iBooks) allows you to highlight text and leave notes. Unfortunately there's no good way to export these, as the information isn't stored in the ePubs themselves. The information <b>is</b> saved in the Media folder though, which is accessible from iPhones over USB. I built an app to read this into a searchable UI without having to install a bunch of software or pore through full backups. You can download the [MacOS Electron app here](https://github.com/dado3212/books-annotations/releases/latest).
 
 <img width="1112" alt="Screenshot of application showing off search and annotation capabilities" src="https://github.com/dado3212/books-annotations/assets/8919256/e140e913-c28f-45b7-b90b-541804f3acb7">
 
