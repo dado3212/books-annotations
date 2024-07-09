@@ -2,6 +2,7 @@ const { app, BrowserWindow, ipcMain } = require('electron');
 const libijs = require('../libijs');
 const plist = require('plist');
 const bplist = require('bplist-parser');
+const fs = require('node:fs');
 
 const meaco = require("meaco");
 
@@ -10,6 +11,11 @@ var isDeviceManagerReady = false;
 var onDeviceManagerReady = () => { };
 
 var mainWindow;
+
+// Helper function for whether or not to use test data
+function isTest() {
+    return !app.isPackaged && process.env.BOOKS_ANNOTATIONS_ENV == 'test';
+}
 
 const createWindow = () => {
     mainWindow = new BrowserWindow({
@@ -41,6 +47,38 @@ const createWindow = () => {
 app.whenReady().then(createWindow);
 
 ipcMain.handle('read-plist', async (event, filePath, type) => {
+
+    // Return test data
+    if (isTest()) {
+        return new Promise((resolve) => {
+            if (filePath === '/Books/Purchases/Purchases.plist') {
+                fs.readFile('./test-files/files-1/Purchases.plist', (err, data) => {
+                    if (err) {
+                        console.log('failed to load', filePath);
+                        return resolve(null);
+                    }
+                    resolve(plist.parse(data.toString()));
+                });
+            } else if (filePath === '/Books/com.apple.ibooks-sync.plist') {
+                fs.readFile('./test-files/files-1/com.apple.ibooks-sync.plist', (err, data) => {
+                    if (err) {
+                        console.log('failed to load', filePath);
+                        return resolve(null);
+                    }
+                    resolve(plist.parse(data.toString()));
+                });
+            } else if (filePath === '/Books/iBooksData2.plist') {
+                fs.readFile('./test-files/files-1/iBooksData2.plist', (err, data) => {
+                    if (err) {
+                        console.log('failed to load', filePath);
+                        return resolve(null);
+                    }
+                    resolve(bplist.parseBuffer(data));
+                });
+            }
+        });
+    }
+
     let device = deviceManager.getDevice();
 
     return new Promise((resolve) => {
@@ -90,9 +128,13 @@ function sendDevice(event) {
 }
 
 ipcMain.handle('fetch-devices', async (event) => {
+    if (isTest()) {
+        event.sender.send('device-name', { success: true, name: 'Test Device' });
+        return;
+    }
     // If it's not ready, then enqueue for after
     if (!isDeviceManagerReady) {
-        event.sender.send('debug-lug', 'Device manager not read yet, will attempt once finished.');
+        event.sender.send('debug-log', 'Device manager not read yet, will attempt once finished.');
         onDeviceManagerReady = () => {
             sendDevice(event)
         };

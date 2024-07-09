@@ -5,6 +5,7 @@
   "main": "js/main.js",
   "scripts": {
     "start": "electron .",
+    "dev": "BOOKS_ANNOTATIONS_ENV=test electron .",
     "build": "electron-packager . 'Books Annotations' --overwrite --platform=darwin --icon=assets/icon.icns --ignore=images --prune --out=release-builds --app-bundle-id=\"com.alexbeals.BooksAnnotations\" --app-version=\"1.1.1\" --build-version=\"1.1.1\" --osx-sign"
   },
   "author": "Alex Beals",

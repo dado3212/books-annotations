@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>Books</key>
+	<array>
+		<dict>
+			<key>Artist</key>
+			<string>Neal Stephenson</string>
+			<key>Inserted-By-iBooks</key>
+			<true/>
+			<key>Name</key>
+			<string>Snow Crash</string>
+			<key>Package Hash</key>
+			<string>D69EA3A575F69268A5DB9F9A26E8720A</string>
+			<key>Path</key>
+			<string>Snow Crash by Neal Stephenson.epub</string>
+			<key>Persistent ID</key>
+			<string>C49087E9DCEC463C</string>
+			<key>Persistent ID Generated On Device</key>
+			<true/>
+			<key>importDate</key>
+			<date>2021-02-21T21:53:29Z</date>
+		</dict>
+	</array>
+</dict>
+</plist>
