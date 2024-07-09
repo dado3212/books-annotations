@@ -21,7 +21,7 @@ function guessName(cfi) {
     const regex = /\[([^\]]+)\]/g;
     let matches = [];
     let match;
-    
+
     while ((match = regex.exec(cfi)) !== null) {
         matches.push(match[1]);
     }
@@ -35,6 +35,37 @@ function guessName(cfi) {
     } else {
         return null;
     }
+}
+
+function handleBookmark(bookmark) {
+    if (!('annotationSelectedText' in bookmark)) {
+        return;
+    }
+    hash = bookmark['annotationAssetID']
+
+    if (!(hash in listOfBooks)) {
+        listOfBooks[hash] = {
+            'name': hash,
+            'author': 'Unknown',
+            'annotations': [],
+        }
+    }
+    // Try and guess the name if it's in the location string
+    if (listOfBooks[hash]['name'] == hash) {
+        let possibleName = guessName(bookmark['annotationLocation']);
+        if (possibleName !== null) {
+            listOfBooks[hash]['name'] = possibleName;
+        }
+    }
+    listOfBooks[hash]['annotations'].push({
+        'date': bookmark["annotationCreationDate"],
+        'selectedText': bookmark['annotationSelectedText'],
+        'representativeText': ('annotationRepresentativeText' in bookmark) ? bookmark['annotationRepresentativeText'] : null,
+        'location': bookmark['annotationLocation'],
+        'style': bookmark['annotationStyle'],
+        'note': ('annotationNote' in bookmark) ? bookmark['annotationNote'] : null,
+        'chapter': ('futureProofing5' in bookmark) ? bookmark['futureProofing5'] : null,
+    });
 }
 
 async function startFetch(button) {
@@ -68,71 +99,14 @@ async function startFetch(button) {
         }
     }
 
-    bookmarks.forEach(bookmark => {
-        if (!('annotationSelectedText' in bookmark)) {
-            return;
-        }
-        let text = bookmark['annotationSelectedText']
-        if ('annotationRepresentativeText' in bookmark && bookmark['annotationRepresentativeText'].includes(text)) {
-            text = bookmark['annotationRepresentativeText']
-        }
-        hash = bookmark['annotationAssetID']
-
-        if (!(hash in listOfBooks)) {
-            listOfBooks[hash] = {
-                'name': hash,
-                'author': 'Unknown',
-                'annotations': [],
-            }
-        }
-        // Try and guess the name if it's in the location string
-        if (listOfBooks[hash]['name'] == hash) {
-            let possibleName = guessName(bookmark['annotationLocation']);
-            if (possibleName !== null) {
-                listOfBooks[hash]['name'] = possibleName;
-            }
-        }
-        listOfBooks[hash]['annotations'].push({
-            'date': bookmark["annotationCreationDate"],
-            'text': text,
-            'location': bookmark['annotationLocation'],
-            'style': bookmark['annotationStyle'],
-            'note': ('annotationNote' in bookmark) ? bookmark['annotationNote'] : null,
-            'chapter': ('futureProofing5' in bookmark) ? bookmark['futureProofing5'] : null,
-        })
-    });
+    bookmarks.forEach(handleBookmark);
 
     // Try and read the older annotations (though we mostly don't have names for these)
     let oldData = await ipcRenderer.invoke('read-plist', '/Books/iBooksData2.plist', 'binary');
     if (oldData !== null) {
         bookmarks = oldData[0]['1.2']['BKBookmark'];
 
-        bookmarks.forEach(bookmark => {
-            if (!('annotationSelectedText' in bookmark)) {
-                return;
-            }
-            let text = bookmark['annotationSelectedText']
-            if ('annotationRepresentativeText' in bookmark && bookmark['annotationRepresentativeText'].includes(text)) {
-                text = bookmark['annotationRepresentativeText']
-            }
-            hash = bookmark['annotationAssetID']
-    
-            if (!(hash in listOfBooks)) {
-                listOfBooks[hash] = {
-                    'name': hash,
-                    'author': 'Unknown',
-                    'annotations': [],
-                }
-            }
-            listOfBooks[hash]['annotations'].push({
-                'date': bookmark["annotationCreationDate"],
-                'text': text,
-                'location': bookmark['annotationLocation'],
-                'style': bookmark['annotationStyle'],
-                'note': ('annotationNote' in bookmark) ? bookmark['annotationNote'] : null,
-                'chapter': ('futureProofing5' in bookmark) ? bookmark['futureProofing5'] : null,
-            })
-        });
+        bookmarks.forEach(handleBookmark);
     }
 
     populate(button);
@@ -208,11 +182,16 @@ async function populate(button) {
         booksList.append(bookElement);
 
         listOfBooks[bookHash]['annotations'].forEach(annotation => {
-            let annotationElement = $(`
-                        <div class="annotation hidden style-${annotation['style']}" data-hash="${bookHash}">
-                            <mark class="text">${annotation['text'].replace("\n", "<br>")}</mark>
-                        </div>
-                    `);
+            let annotationElement = `<div class="annotation hidden" data-hash="${bookHash}">`;
+            if (annotation['representativeText'] !== null) {
+                annotationElement += annotation['representativeText'].replace(
+                    annotation['selectedText'],
+                    `<mark class="style-${annotation['style']}">${annotation['selectedText']}</mark>`
+                ).replace("\n", "<br>");
+            } else {
+                annotationElement += `<mark class="style-${annotation['style']}">${annotation['selectedText']}</mark>`.replace("\n", "<br>");
+            }
+            annotationElement = $(annotationElement + '</div>');
             if (annotation['note'] !== null) {
                 annotationElement.append($(`<div class="note">${annotation['note']}</div>`));
             }
@@ -295,12 +274,12 @@ $(document).ready(async () => {
                 searchBar.focus();
                 searchBar.select();
             }
-        // Hit enter anywhere to index through (or shift+enter to go back)
+            // Hit enter anywhere to index through (or shift+enter to go back)
         } else if (e.keyCode == 13) {
             if (currentSearch !== '') {
                 ipcRenderer.sendSync('find-in-page', currentSearch, { forward: !e.shiftKey, findNext: false, matchCase: false });
             }
-        // Escape to exit the selection
+            // Escape to exit the selection
         } else if (e.code == "Escape") {
             searching = false;
             document.querySelectorAll('.search span').forEach(a => a.classList.add('hidden'));

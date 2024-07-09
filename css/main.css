@@ -123,12 +123,18 @@ body {
         line-height: 1.3em;
     }
 
+    .style-0 {
+        background-color: transparent;
+        text-decoration: underline 2px red;
+    }
+
     &.hidden {
         display: none;
     }
 
     .note {
         margin-top: 8px;
+        font-weight: 500;
     }
 
     .info {
@@ -278,23 +284,23 @@ body {
             color: #d6cbb5;
         }
 
-        &.style-3 mark {
-            background-color: #82611b;
-        }
-
-        &.style-2 mark {
-            background-color: #345190;
-        }
-
-        &.style-1 mark {
+        .style-1 {
             background-color: #3c6621;
         }
 
-        &.style-4 mark {
+        .style-2 {
+            background-color: #345190;
+        }
+
+        .style-3 {
+            background-color: #82611b;
+        }
+
+        .style-4 {
             background-color: #7a3d58;
         }
 
-        &.style-5 mark {
+        .style-5 {
             background-color: #5e4582;
         }
 
@@ -369,23 +375,23 @@ body {
     .annotation {
         border-bottom-color: #eaeaea;
 
-        &.style-3 mark {
-            background-color: #f9df5a;
-        }
-
-        &.style-2 mark {
-            background-color: #a0befa;
-        }
-
-        &.style-1 mark {
+        .style-1 {
             background-color: #a6df94;
         }
 
-        &.style-4 mark {
+        .style-2 {
+            background-color: #a0befa;
+        }
+
+        .style-3 {
+            background-color: #f9df5a;
+        }
+
+        .style-4 {
             background-color: #fda8bd;
         }
 
-        &.style-5 mark {
+        .style-5 {
             background-color: #cbb9f9;
         }
 
