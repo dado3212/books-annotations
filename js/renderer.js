@@ -201,7 +201,7 @@ async function populate(button) {
 
         listOfBooks[bookHash]['annotations'].forEach(annotation => {
             let annotationElement = `<div class="annotation hidden" data-hash="${bookHash}">`;
-            if (annotation['representativeText'] !== null) {
+            if (annotation['representativeText'] !== null && annotation['representativeText'].includes(annotation['selectedText'])) {
                 annotationElement += annotation['representativeText'].replace(
                     annotation['selectedText'],
                     `<mark class="style-${annotation['style']}">${annotation['selectedText']}</mark>`

@@ -62,6 +62,65 @@
 				AQEAAAAAAAAAIgAAAAAAAAAAAAAAAAAAAOA=
 				</data>
 			</dict>
+			<dict>
+				<key>annotationAssetID</key>
+				<string>CED2211604373C3FCF42A347F1E97E2E</string>
+				<key>annotationCreationDate</key>
+				<integer>1606856246</integer>
+				<key>annotationCreatorIdentifier</key>
+				<string>com~apple~iBooks</string>
+				<key>annotationDeleted</key>
+				<integer>0</integer>
+				<key>annotationIsUnderline</key>
+				<integer>0</integer>
+				<key>annotationLocation</key>
+				<string>epubcfi(/6/10[My-Enemy-s-Enemy-3]!/4[My-Enemy-s-Enemy-3]/2,/4/1:0,/6/2/1:29)</string>
+				<key>annotationModificationDate</key>
+				<integer>1606856248</integer>
+				<key>annotationRepresentativeText</key>
+				<string>“Four things greater than all things are,—Women and Horses and Power and War.”</string>
+				<key>annotationSelectedText</key>
+				<string>“Four things greater than all things are,—Women and Horses and Power and War.”
+—Rudyard Kipling, The Ballad of the King’s Test</string>
+				<key>annotationStyle</key>
+				<integer>1</integer>
+				<key>annotationType</key>
+				<integer>2</integer>
+				<key>annotationUuid</key>
+				<string>22DB2C35-1202-48A3-BEFF-A774EE41ADC2</string>
+				<key>futureProofing11</key>
+				<string>628549046.238739</string>
+				<key>futureProofing5</key>
+				<string>Epigraph</string>
+				<key>futureProofing6</key>
+				<string>628549048.159193</string>
+				<key>futureProofing7</key>
+				<string>{0, 126}</string>
+				<key>futureProofing9</key>
+				<string>1</string>
+				<key>plAbsolutePhysicalLocation</key>
+				<integer>0</integer>
+				<key>plLocationRangeEnd</key>
+				<integer>0</integer>
+				<key>plLocationRangeStart</key>
+				<integer>4</integer>
+				<key>plUserData</key>
+				<data>
+				YnBsaXN0MDDWAQIDBAUGBwgMDR4fVWNsYXNzVXN1cGVy
+				W3N0YXJ0T2Zmc2V0V2VuZFBhdGhZZW5kT2Zmc2V0WXN0
+				YXJ0UGF0aF5CS0VwdWJMb2NhdGlvbtIJAQoLV29yZGlu
+				YWwQBFpCS0xvY2F0aW9uIgAAAACkDhUZHNMPEBESExRX
+				dGFnTmFtZVljbGFzc05hbWVVaW5kZXhTZGl2XxAbX2lk
+				R2VuT2JqZWN0U3R5bGVPdmVycmlkZS0xEALTDxARFhcY
+				UXBfEBhNYWluLUJvZHkgUGFyYU92ZXJyaWRlLTUQBtMP
+				EBEaGxRUc3BhblFJ0REdEAEiQegAAKMgIiTTDxAREiEU
+				XxAbX2lkR2VuT2JqZWN0U3R5bGVPdmVycmlkZS0x0w8Q
+				ERYjCllNYWluLUJvZHnRER0ACAAVABsAIQAtADUAPwBJ
+				AFgAXQBlAGcAcgB3AHwAgwCLAJUAmwCfAL0AvwDGAMgA
+				4wDlAOwA8QDzAPYA+AD9AQEBCAEmAS0BNwAAAAAAAAIB
+				AAAAAAAAACUAAAAAAAAAAAAAAAAAAAE6
+				</data>
+			</dict>
 		</array>
 		<key>Generation</key>
 		<integer>1699730376</integer>
