@@ -30,11 +30,29 @@ function guessName(cfi) {
         return null;
     }
 
-    if (matches[1].includes(matches[0]) && !matches[0].startsWith('id')) {
-        return matches[0].replace(/[\d-]+$/, '');
-    } else {
+    if (!matches[1].includes(matches[0])) {
         return null;
     }
+
+    // Best guess
+    let guess = matches[0].replace(/[\d-]+$/, '');
+    // Should be the right length
+    if (guess.length <= 3) {
+        return null;
+    }
+    // Shouldn't contain certain words
+    if (['epub', 'chapter', 'prologue', 'ebook'].some(forbiddenString =>
+        guess.toLowerCase().includes(forbiddenString.toLowerCase())
+    )) {
+        return null;
+    }
+    // Shouldn't BE other words
+    if (['introduction'].some(forbiddenString =>
+        guess.toLowerCase() == forbiddenString.toLowerCase())
+    ) {
+        return null;
+    }
+    return guess;
 }
 
 function handleBookmark(bookmark) {

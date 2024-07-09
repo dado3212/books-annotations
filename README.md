@@ -73,6 +73,7 @@ Taking the `filepath` from the `/Books/Purchases/Purchases.plist` can let you pu
 I built this using `node -v: v20.14.0` and `npm -v: 10.7.0`.
 
 * `npm run start` runs the app locally
+* `npm run dev` runs the app with temp data. Before deploying make sure it matches the screenshots.
 * `npm run build` builds the Mac app in `release-builds`. I took the resulting `.app` and zipped it for the release version.
 
 ## Thanks
