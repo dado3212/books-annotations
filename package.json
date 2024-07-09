@@ -1,6 +1,6 @@
 {
   "name": "books-annotations",
-  "version": "1.1.1",
+  "version": "1.2.0",
   "description": "An app for viewing and extracting annotations and highlights and notes from the Books app",
   "main": "js/main.js",
   "scripts": {
@@ -8,7 +8,7 @@
     "test1": "BOOKS_ANNOTATIONS_ENV=test1 electron .",
     "test2": "BOOKS_ANNOTATIONS_ENV=test2 electron .",
     "test3": "BOOKS_ANNOTATIONS_ENV=test3 electron .",
-    "build": "electron-packager . 'Books Annotations' --overwrite --platform=darwin --icon=assets/icon.icns --ignore=images --prune --out=release-builds --app-bundle-id=\"com.alexbeals.BooksAnnotations\" --app-version=\"1.1.1\" --build-version=\"1.1.1\" --osx-sign"
+    "build": "electron-packager . 'Books Annotations' --overwrite --platform=darwin --icon=assets/icon.icns --ignore=\"test-files/.*|release-builds/.*\" --prune --out=release-builds --app-bundle-id=\"com.alexbeals.BooksAnnotations\" --app-version=\"1.2.0\" --build-version=\"1.2.0\" --osx-sign"
   },
   "author": "Alex Beals",
   "repository": "https://github.com/dado3212/books-annotations",
