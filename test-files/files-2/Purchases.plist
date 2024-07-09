@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>Books</key>
+	<array>
+		<dict>
+			<key>AppleID</key>
+			<string>unknown@gmail.com</string>
+			<key>Artist</key>
+			<string>H.G. Wells</string>
+			<key>Backup-Path</key>
+			<string>/var/mobile/Media/Books/Purchases/19AEC87B-65B3-4D2B-9F1F-D6CF03246FFD.epub</string>
+			<key>DSID</key>
+			<integer>123</integer>
+			<key>Estimated Download Size</key>
+			<integer>3196740</integer>
+			<key>Flavor</key>
+			<string>pluspub</string>
+			<key>Genre</key>
+			<string>Sci-Fi &amp; Fantasy</string>
+			<key>Name</key>
+			<string>H. G. Wells: Classics Novels and Short Stories</string>
+			<key>Page Progression Direction</key>
+			<string>default</string>
+			<key>Path</key>
+			<string>19AEC87B-65B3-4D2B-9F1F-D6CF03246FFD.epub</string>
+			<key>Persistent ID</key>
+			<string>0F76E52742AC4AC7</string>
+			<key>Persistent ID Generated On Device</key>
+			<true/>
+			<key>Publication Version</key>
+			<integer>163326480</integer>
+			<key>Release Date</key>
+			<string>2017-07-01T07:00:00Z</string>
+			<key>Sort Artist</key>
+			<string>Wells, H.G.</string>
+			<key>Sort Name</key>
+			<string>H. G. Wells: Classics Novels and Short Stories</string>
+			<key>Storefront ID</key>
+			<integer>123</integer>
+			<key>isSample</key>
+			<false/>
+			<key>s</key>
+			<integer>123</integer>
+		</dict>
+	</array>
+</dict>
+</plist>

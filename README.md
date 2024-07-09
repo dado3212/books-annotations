@@ -73,8 +73,14 @@ Taking the `filepath` from the `/Books/Purchases/Purchases.plist` can let you pu
 I built this using `node -v: v20.14.0` and `npm -v: 10.7.0`.
 
 * `npm run start` runs the app locally
-* `npm run dev` runs the app with temp data. Before deploying make sure it matches the screenshots.
 * `npm run build` builds the Mac app in `release-builds`. I took the resulting `.app` and zipped it for the release version.
+
+## Testing The App
+
+You should go through a flow with a real phone, using `npm run start`. You can also use the three testing environments, and confirm they match the uploaded screenshots in those files, in light and dark mode.
+* `npm run test1` - tests my production environment, tests all colors, styles, notes
+* `npm run test2` - test some alternate data formats users have reported, other languages
+* `npm run test3` - test no annotations
 
 ## Thanks
 
